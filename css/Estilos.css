@@ -1,0 +1,98 @@
+*{
+    
+    margin: 0;
+    padding: 20px;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+body{
+    background: #FFDDFF; 
+    display: flex;
+    min-height: 100vh;
+    
+}
+
+form{
+    
+    margin:auto;
+    width: 50%;
+    max-width: 500px;
+    background: #BBE8E0;
+    padding: 30px;
+    border: 6px solid rgba(0,0,0,0.4)
+}
+#Titutlos {
+    
+  font-size: 90%;
+     border: 6px solid rgba(0,0,0,0.4)
+}
+
+
+
+#NombreR
+{
+     color: maroon;
+    font-family: Tahoma; 
+    font-variant: small-caps; 
+    right: 139px; 
+    top: 3px; 
+    text-align:center; 
+    width: 720px;
+    font-size: medium; 
+    font-weight: bold
+
+   
+}
+
+h2{
+    
+    
+    text-align: center;
+    margin-bottom: 0px;
+    color: royalblue;
+    
+    
+}
+input{
+    
+    display: block;
+    padding: 10px;
+    width: 100%;
+    margin: 10% 0;
+    font-size: 20px
+}
+
+input[type="submit"]{
+    
+    background: linear-gradient(#FFDA63,#FFB940);
+    border: 0;
+    color: brown;
+    apacity: 0.8;
+    cursor: pointer;
+    border-radius: 20px;
+    margin-bottom: 7;
+    
+}
+
+#Registro
+{
+    
+    margin:auto;
+    width: 100%;
+    max-width: 500px;
+    background: #BBE8E0;
+    padding: 30px;
+    border: 3px solid rgba(4,5,1,0.1)
+    
+}
+
+input[type="submit"]:hover{
+    
+    apacity: 1;
+}
+input[type="submit"]:active
+{
+    
+    transform: scale(0.85)
+}

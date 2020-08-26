@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+   <head>
+       <title>Formulario</title>
+             <meta name="viewport" content="width=divice-width,use-scalable-yes,
+                initial-scale=1,maximum-scale=3,minimum-scale=1">
+             <link rel="stylesheet" href="css/StyleRegistro.css">
+             <link rel="alternate" href="php/InsertRegistro.php">
+             <link rel="stylesheet" href="css/Estilos.css">
+             <meta charset ="UTF-8">
+             <script type="text/javascript" src="js\script.js"></script>
+         <link rel="shortcut icon" type="image/x-icon" href="img/logo_upiita-01%20(1).ico">    
+ </head>
+
+<body>
+ <form id="Registro" action="php/InsertRegistro.php" method="post" class="form-register" onsubmit=""> 
+	
+	<label for="Nombres">Nombre completo:</label>
+	<input type="text" placeholder="Nombre(s)" name="Nombre"  required>
+	<input type="text" placeholder="Apellido Paterno" name="Apellido_Paterno"  required>
+	<input type="text" placeholder="Apellido Materno" name="Apellido_Materno" required>
+	
+	<label for="Boleta">Boleta:</label>
+	<input type="text" placeholder="Boleta" id="Boleta" name="Boleta"  required>		
+	
+	<label for="Carrera">Carrera:</label>
+	<input type="number" placeholder="Carrera" id="Carrera" name="Carrera" required>		
+	
+	<label for="Semestre">Semestre:</label>
+	<input type="number" placeholder="Semestre" id="Semestre" name="Semestre" required>		
+	
+	<label for="Genero">Genero:</label>
+	<label for="Masculino">Masculino:</label>
+  	<input type="radio" name="Genero"  value="1" required><br>  	
+	<label for="Femenino">Femenino:</label>  	
+	<input type="radio" name="Genero"  value="2" required><br>
+	
+	<label for="FechaNacimiento">Fecha de nacimiento:</label>	
+	<input type="text" placeholder="Fecha de nacimiento" id="Fecha_Nacimiento" name="Fecha_Nacimiento" required>
+	
+	<label for="Contacto">Contacto:</label>
+	<input type="text" placeholder="Teléfono Fijo" id="Telefono_Fijo" name="Telefono_Fijo"  required>
+	<input type="text" placeholder="Teléfono Celular" id="Telefono_Celular" name="Telefono_Celular" required>
+	<input type="email" placeholder="Correo Electrónico" id="Email"  name="Email" required>
+	
+	<label for="Pasatiempo">Pasatiempo:</label>	
+	<input type="text" placeholder="Pasatiempo" id="Hobby" name="Hobby" required>
+	
+	
+	<label for="Contraseña" >Contraseña:</label>	
+	<input type="password" placeholder="Contraseña" id="Password" name ="Password" minlength="8" required>
+  <input type="submit" value="Registar"  onsubmit="">
+  </form>
+
+
+
+</body>
+
+</html>
