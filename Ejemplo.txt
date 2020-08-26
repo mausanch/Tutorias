@@ -1,9 +1,5 @@
 Para subir cambios
 
-<<<<<<< HEAD
-No, Yo más bebé<3 
-
-=======
 git add . 
 git commit -m "Explicación"
 git pull origin master (.OJO. Hacer el pull antes de cualquier push)
@@ -12,5 +8,7 @@ git pull origin master (.OJO. Hacer el pull antes de cualquier push)
 Recibir cambios 
 git add . 
 git commit -m "Explicación"
+git pull origin master 
 git push -u origin master 
->>>>>>> a1681d2b670add327d83968d2a979c88b4a27588
+
+RICARDO "MI MENSAJE !!!!"
