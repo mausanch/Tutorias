@@ -2,13 +2,10 @@ Para subir cambios
 
 git add . 
 git commit -m "Explicación"
-git pull origin master (.OJO. Hacer el pull antes de cualquier push)
+git push origin master (.OJO. Hacer el pull antes de cualquier push)
 
 
 Recibir cambios 
-git add . 
-git commit -m "Explicación"
 git pull origin master 
-git push -u origin master 
 
 RICARDO "MI MENSAJE !!!!"
