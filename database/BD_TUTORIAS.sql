@@ -229,19 +229,23 @@ insert into AlumnoProfesor values (4,2015020709,2576767687,11,"2020-08-20");
         
         /*Nuevas vistas*/
     
-        drop view if exists View_Alumnos_Profesor_Alumnos;
-        create view View_Profesor_Alumnos as
+        drop view if exists View_Alumno_Profesor_Alumnos;
+        /*Esta vista es para iniciar sesion como profesor y ver todos sus alumnos (estado y solicitudes)*/
+	    create view View_Alumno_Profesor_Alumnos as 
         select Alumnos.NoBoleta,
+               Alumnos.Nombre,
                Alumnos.Paterno,
                Alumnos.Materno,
                Estados.Estado
-	    from   AlumnoProfesor
-			   inner Join Estados
-					   on Estados.IdEstado=AlumnoProfesor.IdEstado
-			   inner join Alumnos
-					   on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta;
-               
+			from   AlumnoProfesor
+				   inner Join Estados
+						   on Estados.IdEstado=AlumnoProfesor.IdEstado
+				   inner join Alumnos
+						   on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta;
+                  /*where AlumnoProfesor.IdEstado= 4;*/
+                  /*and AlumnoProfesor.NoEmpleado=2589654510;*/
         
+        select * from View_Alumno_Profesor_Alumnos;
         
         
         
