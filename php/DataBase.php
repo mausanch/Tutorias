@@ -238,30 +238,32 @@ class DataBase{
     public static function Insert_Tutor_Administrador ($mysqli,$NoEmpleado,$Nombre, $Apellido_Paterno, $Apellido_Materno,
                                                  $Genero, $Academia, $Turno, $Email,$Password)
                                                  {
-
-        try {
+    $Estado_Por_Defecto=1;
+    $permitted_chars = '123456789abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ';
+    $Clave_Aceptacion=substr(str_shuffle($permitted_chars), 0, 8);
+    try {
             $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
             $Conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $query="insert into Alumnos values (
-            ".$Boleta.",
+            ".$NoEmpleado.",
             ".$Contrasenia.",
             '".$Nombre."',
             '".$Paterno."',
             '".$Carrera."',
             '".$Semestre."',
             '".$Genero."',
-            '".$Oficio."',
-            '".$Fecha_Nacimiento."',
-            '".$Telefono_Fijo."',
-            '".$Telefono_Celular."',
-            '".$Email."',
-            '".$Hobby."',
-            '".$Situacion_Academica."'
+            '".$Academia."',
+            '".$Turno."',
+            '".$Clave_Aceptacion."'
+            '".$Estado_Por_Defecto."'
             );";
             $Alumno = $Conexion->prepare($query); 
             $Alumno->execute();  //Ejecuto la consulta
 
-            return ["POST"=>"Correcto, insertado correctamente"];
+            return [
+                "POST"=>"Correcto, insertado correctamente",
+                "Clave"=>$Clave_Aceptacion
+            ];
          }catch(PDOException $e){
              return ["POST"=>$e->getMessage()];
          }
