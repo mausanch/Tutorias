@@ -27,6 +27,37 @@ class DataBase{
         return ["Acuses_General"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
 /*--------------------------------------------------Alumno-------------------------------------------------*/
+   
+    public static function View_DatosByPersonales_Alumno($mysqli){
+    $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+
+    $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+    $query="SELECT * FROM View_DatosByPersonales_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+    $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+    $result->execute();  //Ejecuto la consulta
+    return ["TutorActual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+    }
+
+    public static function View_DatosByAcademicos_Alumno($mysqli){
+        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+    
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_DatosByPersonales_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        return ["TutorActual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+    }
+
+    public static function View_DatosByContacto_Alumno($mysqli){
+        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+    
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_DatosByPersonales_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        return ["TutorActual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+    }
+
     public static function View_Adeudos_Alumno($mysqli){
         $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
 
@@ -104,7 +135,7 @@ class DataBase{
         ];//Retorno la matriz en el formato
     }
 
-    public static function View_TutoradosDetalle_Profesor($mysqli,$IDAlumno){
+    public static function View_TutoradosByDetalle_Profesor($mysqli,$IDAlumno){
         $NoEmpleado=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
 
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
@@ -113,7 +144,7 @@ class DataBase{
         $Historial->execute();  //Ejecuto la consulta
         return [
             "TutoradosDetalle"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
-        ];//Retorno la matriz en el formato
+        ];
     }
 
 /*-----------------------------------------------Administrador----------------------------------------------------*/
@@ -127,6 +158,16 @@ class DataBase{
         ];//Retorno la matriz en el formato
     }
 
+    public static function View_TutoresByDetalle_Administrador($mysqli,$IDProfesor){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_TutoresByDetalle_Administrador";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "TutoresByDetalle"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
     public static function View_Tutorados_Administrador($mysqli){
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
         $query="SELECT * FROM View_Tutores_Administrador";//Introduzco la consulta
@@ -134,6 +175,16 @@ class DataBase{
         $Historial->execute();  //Ejecuto la consulta
         return [
             "Tutorados"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
+    public static function View_TutoradosByDetalle_Administrador($mysqli,$IDAlumno){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_TutoresByDetalle_Administrador where IDAlumno='".$IDAlumno."'";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "TutoradosByDetalle"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
         ];//Retorno la matriz en el formato
     }
 
@@ -149,35 +200,34 @@ class DataBase{
     }
 /*----------------------------------------------Insercciones------------------------------------------------ */
 
-    public static function Crear_Alumno ($mysqli,$Nombre, $Apellido_Paterno, $Apellido_Materno, $Fecha_Nacimiento, $Ciudad, $Pais, $Oficio, $Contacto_Telefono, $Nivel_Educativo, $Situacion_Familiar, $Causa_Migracion, $Llave){
+    public static function Insert_Alumno_Alumno ($mysqli,$Nombre, $Apellido_Paterno, $Apellido_Materno,
+                                                 $Genero, $Fecha_Nacimiento, $Hobby, $Boleta, $Carrera, 
+                                                 $Semestre, $Situacion_Academica, $Telefono_Fijo, $Telefono_Celular, 
+                                                 $Email,$Contrasenia){
 
-        $Estado_Por_Defecto= 1;
-        $PuntoDeControl=$_SESSION['POINTID'];
-        $Comida_Por_Defecto=0;
+
         try {
             $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
             $Conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $query="insert into Migrante values (
-            NULL,
+            $query="insert into Alumnos values (
+            ".$Boleta.",
+            ".$Contrasenia.",
             '".$Nombre."',
-            '".$Apellido_Paterno."',
-            '".$Apellido_Materno."',
-            '".$Ciudad."',
-            '".$Pais."',
+            '".$Paterno."',
+            '".$Carrera."',
+            '".$Semestre."',
+            '".$Genero."',
             '".$Oficio."',
             '".$Fecha_Nacimiento."',
-            NULL,
-            '".$Contacto_Telefono."',
-            '".$Nivel_Educativo."',
-            '".$Situacion_Familiar."',
-            '".$Llave."',
-            '".$Causa_Migracion."',
-            '".$Estado_Por_Defecto."');";
-            $Migrante = $Conexion->prepare($query); 
-            $Migrante->execute();  //Ejecuto la consulta
+            '".$Telefono_Fijo."',
+            '".$Telefono_Celular."',
+            '".$Email."',
+            '".$Hobby."',
+            '".$Situacion_Academica."'
+            );";
+            $Alumno = $Conexion->prepare($query); 
+            $Alumno->execute();  //Ejecuto la consulta
 
-            $result  = $Conexion->prepare($query); //
-            $result->execute();
             return ["POST"=>"Correcto, insertado correctamente"];
          }catch(PDOException $e){
              return ["POST"=>$e->getMessage()];
@@ -185,6 +235,40 @@ class DataBase{
 
     }
 
+    public static function Insert_Tutor_Administrador ($mysqli,$NoEmpleado,$Nombre, $Apellido_Paterno, $Apellido_Materno,
+                                                 $Genero, $Academia, $Turno, $Email,$Password)
+                                                 {
+    $Estado_Por_Defecto=1;
+    $permitted_chars = '123456789abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ';
+    $Clave_Aceptacion=substr(str_shuffle($permitted_chars), 0, 8);
+    try {
+            $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+            $Conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $query="insert into Alumnos values (
+            ".$NoEmpleado.",
+            ".$Contrasenia.",
+            '".$Nombre."',
+            '".$Paterno."',
+            '".$Carrera."',
+            '".$Semestre."',
+            '".$Genero."',
+            '".$Academia."',
+            '".$Turno."',
+            '".$Clave_Aceptacion."'
+            '".$Estado_Por_Defecto."'
+            );";
+            $Alumno = $Conexion->prepare($query); 
+            $Alumno->execute();  //Ejecuto la consulta
+
+            return [
+                "POST"=>"Correcto, insertado correctamente",
+                "Clave"=>$Clave_Aceptacion
+            ];
+         }catch(PDOException $e){
+             return ["POST"=>$e->getMessage()];
+         }
+
+    }
 
 
 /*----------------------------------------------Modificaciones------------------------------------------------ */
