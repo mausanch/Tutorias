@@ -38,6 +38,25 @@ use ProyectoTutoriasFinal;
         primary key (IdTurno)
         );
         
+         DROP TABLE IF EXISTS  Profesores;           
+		create table Profesores(
+				NoEmpleado bigint(10) not null,
+				Contrasenia varchar(100) not null, 
+				Nombre varchar(30)not null,
+				Paterno varchar(20)not null ,
+				Materno varchar(30)not null ,
+                IdGenero int not null ,
+				IdAcademia int not null,
+				IdTurno int not null ,
+				ClaveAcepta varchar(10)not null,
+                IdEstado int not null check(IdEstado in(1,2,3)), /*1-Activo,2-Suspendido.3-Inactivo*/
+				primary key(NoEmpleado),
+				foreign key(IdAcademia) references Academia(IdAcademia),
+                foreign key(IdEstado) references Estados(IdEstado),
+                foreign key(IdTurno) references Turnos(IdTurno),
+                foreign key (IdGenero) references Genero(IdGenero) 
+		);
+        
         DROP TABLE IF EXISTS  Alumnos;
         create table Alumnos(
 			NoBoleta int(10) not null, 
@@ -60,29 +79,11 @@ use ProyectoTutoriasFinal;
             foreign key (IdGenero) references Genero(IdGenero) 
            );
            
-         DROP TABLE IF EXISTS  Profesores;           
-		create table Profesores(
-				NoEmpleado int(10)  not null,
-				Contrasenia varchar(100) not null, 
-				Nombre varchar(30)not null,
-				Paterno varchar(20)not null ,
-				Materno varchar(30)not null ,
-                IdGenero int not null ,
-				IdAcademia int not null,
-				IdTurno int  not null ,
-				ClaveAcepta varchar(10)not null,
-                IdEstado int not null check(IdEstado in(1,2,3)), /*1-Activo,2-Suspendido.3-Inactivo*/
-				primary key(NoEmpleado),
-				foreign key(IdAcademia) references Academia(IdAcademia),
-                foreign key(IdEstado) references Estados(IdEstado),
-                foreign key(IdTurno) references Turnos(IdTurno),
-                foreign key (IdGenero) references Genero(IdGenero) 
-		);
-        
+       
 		create table AlumnoProfesor (
 			IdAlumnoProfesor int not null auto_increment,
 			NoBoleta int(20) not null,
-			NoEmpleado int(20) not null,
+			NoEmpleado bigint(20) not null,
 			IdEstado int not null check(IdEstado in(4,5,10,11,12)), /*4-Pendiente, 5-Sin asignar 10-Finalizado 11-Aceptado 12-Rechazado*/
             FechaSolicitud date not null,
 			primary key(IdAlumnoProfesor),
@@ -116,6 +117,132 @@ use ProyectoTutoriasFinal;
                     foreign key(IdAdeudo) references AdeudosAlumno(IdAdeudo),
                     foreign Key(IdMateria) references Materias(IdMateria)
         );
+        
+/*Insert*/
+insert into Genero values (1,"Masculino"),
+						  (2,"Femenino");
+	
+insert into Estados(Estado) values ("Activo"),/*Profesor en labores y  relacion Tutor-Tutorados*/
+								   ("Suspendido"),/*Profesor en sabatico  Alumno suspendido*/
+								   ("Inactivo"),/*Alumno dado de baja o Profesor fuera del instituto*/  
+								   ("Pendiente"),/*Solicitud de Tutorado*/
+								   ("Sin Asignar"),/*Ha alcanzado el maximo de Tutores*/                                 
+								   ("Regular"),/*Situacion academica del alumno*/
+								   ("Iregular"),/*Situacion academica del alumno*/
+								   ("Reprobada"),/*Status de la materia*/
+								   ("Aprobada"),/*Status de la materia*/
+                                   ("Finalizado"),/*Finalizar Relacion Tutor-Tutorado*/
+                                   ("Aceptado"),/*Solicitud aceptada*/
+                                   ("Rechazado");/*Solicitud Rechazada*/
+                                   
+insert into Turnos(Turno) values ("Matutino"),
+								 ("Vespertino"),
+								 ("Mixto");
+                                
+insert into Carreras(carrera) values ("Ing. Telemática");
+insert into Carreras(carrera) values ("Ing. Mecatrónica");
+insert into Carreras(carrera) values ("Ing. Bionica");
+insert into Carreras(carrera) values ("Ing. en Energia");
+insert into Carreras(carrera) values ("Ing. en Sistemas Automotrices");
+
+insert into Materias (Materia) values   ("PROGRAMACION"),
+									    ("ANALISIS Y DISEÑO DE SISTEMAS"),
+									    ("ESTRUCTURA DE DATOS"),
+										("ADMINISTRACION DE SISTEMAS OPERATIVOS"),
+										("DISEÑO DIGITAL"),
+										("ARQUITECTURA DE COMPUTADORAS"),
+										("FUNDAMENTOS DE FISICA"),
+										("ECUACIONES DIFERENCIALES"),
+										("PROBABILIDAD"),
+										("CALCULO DIFERENCIAL E INTEGRAL"),
+										("VARIABLE COMPLEJA"), 
+										("ALGEBRA LINEAL"),
+										("ELECTROMAGNETISMO"),
+										("CALCULO MULTIVARIABLE"),
+										("ADMINISTRACION ORGANIZACIONAL"),
+										("ETICA, PROFESION Y SOCIEDAD"),
+										("COMUNICACION ORAL Y ESCRITA"),
+										("INGLES I"),
+										("INGLES II"),
+										("PROGRAMACION ESTRUCTURADA"),
+										("SOCIEDAD, CIENCIA Y TECNOLOGIA"),
+										("SEÑALES Y SISTEMAS"),
+										("PROPAGACION DE ONDAS ELECTROMAGNETICAS"),
+										("ELECTRONICA"),
+										("TEORIA DE LOS CIRCUITOS"),
+										("TEORIA DE LA INFORMACION"),
+										("TEORIA DE LAS COMUNICACIONES"),
+										("COMUNICACIONES DIGITALES"),
+										("PROCESAMIENTO DIGITAL DE SEÑALES"),
+										("TELEFONIA"),
+										("SISTEMAS CELULARES"),
+										("PROTOCOLOS DE INTERNET"),
+										("SISTEMAS DISTRIBUIDOS"),
+										("INGENIERIA WEB"),
+										("PROGRAMACION AVANZADA"),
+										("BASES DE DATOS"),
+										("TRANSMISION DE DATOS"),
+										("INFORMACION FINANCIERA E INGENIERIA ECONOMICA"),
+										("OPTATIVA I"),
+										("INGLES III"),
+										("METODOS NUMERICOS"),
+										("ELECTRONICA PARA COMUNICACIONES"),
+										("OPTICA"),
+										("DESARROLLO SUSTENTABLE"),
+										("ECONOMIA PARA INGENIEROS"),
+										("INGLES IV"),
+										("REDES INALAMBRICAS"),
+										("REDES NEURONALES"),
+										("LOGICA DIFUSA"),
+										("SISTEMAS DE INFORMACION GEOGRAFICA"),
+										("PROGRAMACION DE DISPOSITIVOS MOVILES"),
+										("NORMATIVIDAD EN TELECOMUNICACIONES E INFORMATICA");
+
+insert into Academia(Academia) values ("TELE");
+insert into Academia(Academia) values ("MEC");
+insert into Academia(Academia) values ("BIO");
+insert into Academia(Academia) values ("ISISA");
+insert into Academia(Academia) values ("ADMIN");
+insert into Academia(Academia) values ("HUM");
+insert into Academia(Academia) values ("INGLES");
+insert into Academia(Academia) values ("CYD");
+insert into Academia(Academia) values ("QB");
+insert into Academia(Academia) values ("CB");
+insert into Academia(Academia) values ("ELEC");
+insert into Academia(Academia) values ("INF");
+insert into Academia(Academia) values ("ME");
+insert into Academia(Academia) values ("SIST"); 
+                  
+insert into Profesores values (2589654510,"123456","Paola Nayeli","Cortez","Herrera", 2 , 1 , 1 ,"12345678", 1 );
+insert into Profesores values (2576767687,"1234","Hugo","Gonzalez","Casas", 1,1 , 2,"123456789",1);
+insert into Profesores values (2345567890,"12348","Martha","Hernandez","Hernandez", 2,1 , 3,"123456781",1);
+
+insert into Alumnos values (2015030721,"12345","Nadia","Lopez","Tirado", 1 , 4 ,2,"1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com","Baquetbol",7);
+insert into Alumnos values (2015170720,"123","Mauricio","Sanchez","Moreno", 1 , 4 ,1,"1999-09-19","55555555","5585963625", "mauricio@hotmail,com","Campismo",7);
+insert into Alumnos values (2015080720,"12","Ricardo","Flores","Lima", 1 , 4 ,1,"1999-01-13","58888888","5556465544", "ricardo@hotmail,com","Cilcismo",6);
+insert into Alumnos values ("2015020709","12340","ARTURO","LANDA","ESPINOSA", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "arturolandae@hotmail,com","NATACION Y BASKET",7);
+
+insert into AlumnoProfesor values (1,2015030721,2589654510,11,"2020-08-18");
+insert into AlumnoProfesor values (2,2015170720,2589654510,11,"2020-08-17");
+insert into AlumnoProfesor values (3,2015080720,2576767687,11,"2020-08-18");
+insert into AlumnoProfesor values (4,2015020709,2576767687,11,"2020-08-20");
+        
+        /*Nuevas vistas*/
+    
+        drop view if exists View_Alumnos_Profesor_Alumnos;
+        create view View_Profesor_Alumnos as
+        select Alumnos.NoBoleta,
+               Alumnos.Paterno,
+               Alumnos.Materno,
+               Estados.Estado
+	    from   AlumnoProfesor
+			   inner Join Estados
+					   on Estados.IdEstado=AlumnoProfesor.IdEstado
+			   inner join Alumnos
+					   on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta;
+               
+        
+        
         
         
         
@@ -583,115 +710,6 @@ SELECT
     FROM Profesores inner Join Academia 
 						on Academia.IdAcademia=Profesores.IdAcademia;                        
                         
-/*select *from Profesores_Tutores; */
-
-/*Insert*/
-insert into sexoAP values (1,"Masculino"),
-						  (2,"Femenino");
-	
-insert into Estados(Estado) values ("Activo"),/*Profesor en labores y  relacion Tutor-Tutorados*/
-								   ("Suspendido"),/*Profesor en sabatico  Alumno suspendido*/
-								   ("Inactivo"),/*Alumno dado de baja o Profesor fuera del instituto*/  
-								   ("Pendiente"),/*Solicitud de Tutorado*/
-								   ("Sin Asignar"),/*Ha alcanzado el maximo de Tutores*/                                 
-								   ("Regular"),/*Situacion academica del alumno*/
-								   ("Iregular"),/*Situacion academica del alumno*/
-								   ("Reprobada"),/*Status de la materia*/
-								   ("Aprobada"),/*Status de la materia*/
-                                   ("Finalizado"),/*Finalizar Relacion Tutor-Tutorado*/
-                                   ("Aceptado"),/*Solicitud aceptada*/
-                                   ("Rechazado");/*Solicitud Rechazada*/
-                                   
-insert into Turnos(Turno) values ("Matutino"),
-								 ("Vespertino"),
-								 ("Mixto");
-                                
-insert into Carreras(carrera) values ("Ing. Telemática");
-insert into Carreras(carrera) values ("Ing. Mecatrónica");
-insert into Carreras(carrera) values ("Ing. Bionica");
-insert into Carreras(carrera) values ("Ing. en Energia");
-insert into Carreras(carrera) values ("Ing. en Sistemas Automotrices");
-
-insert into Materias (Materia) values   ("PROGRAMACION"),
-									    ("ANALISIS Y DISEÑO DE SISTEMAS"),
-									    ("ESTRUCTURA DE DATOS"),
-										("ADMINISTRACION DE SISTEMAS OPERATIVOS"),
-										("DISEÑO DIGITAL"),
-										("ARQUITECTURA DE COMPUTADORAS"),
-										("FUNDAMENTOS DE FISICA"),
-										("ECUACIONES DIFERENCIALES"),
-										("PROBABILIDAD"),
-										("CALCULO DIFERENCIAL E INTEGRAL"),
-										("VARIABLE COMPLEJA"), 
-										("ALGEBRA LINEAL"),
-										("ELECTROMAGNETISMO"),
-										("CALCULO MULTIVARIABLE"),
-										("ADMINISTRACION ORGANIZACIONAL"),
-										("ETICA, PROFESION Y SOCIEDAD"),
-										("COMUNICACION ORAL Y ESCRITA"),
-										("INGLES I"),
-										("INGLES II"),
-										("PROGRAMACION ESTRUCTURADA"),
-										("SOCIEDAD, CIENCIA Y TECNOLOGIA"),
-										("SEÑALES Y SISTEMAS"),
-										("PROPAGACION DE ONDAS ELECTROMAGNETICAS"),
-										("ELECTRONICA"),
-										("TEORIA DE LOS CIRCUITOS"),
-										("TEORIA DE LA INFORMACION"),
-										("TEORIA DE LAS COMUNICACIONES"),
-										("COMUNICACIONES DIGITALES"),
-										("PROCESAMIENTO DIGITAL DE SEÑALES"),
-										("TELEFONIA"),
-										("SISTEMAS CELULARES"),
-										("PROTOCOLOS DE INTERNET"),
-										("SISTEMAS DISTRIBUIDOS"),
-										("INGENIERIA WEB"),
-										("PROGRAMACION AVANZADA"),
-										("BASES DE DATOS"),
-										("TRANSMISION DE DATOS"),
-										("INFORMACION FINANCIERA E INGENIERIA ECONOMICA"),
-										("OPTATIVA I"),
-										("INGLES III"),
-										("METODOS NUMERICOS"),
-										("ELECTRONICA PARA COMUNICACIONES"),
-										("OPTICA"),
-										("DESARROLLO SUSTENTABLE"),
-										("ECONOMIA PARA INGENIEROS"),
-										("INGLES IV"),
-										("REDES INALAMBRICAS"),
-										("REDES NEURONALES"),
-										("LOGICA DIFUSA"),
-										("SISTEMAS DE INFORMACION GEOGRAFICA"),
-										("PROGRAMACION DE DISPOSITIVOS MOVILES"),
-										("NORMATIVIDAD EN TELECOMUNICACIONES E INFORMATICA");
-
-insert into Academia(Academia) values ("TELE");
-insert into Academia(Academia) values ("MEC");
-insert into Academia(Academia) values ("BIO");
-insert into Academia(Academia) values ("ISISA");
-insert into Academia(Academia) values ("ADMIN");
-insert into Academia(Academia) values ("HUM");
-insert into Academia(Academia) values ("INGLES");
-insert into Academia(Academia) values ("CYD");
-insert into Academia(Academia) values ("QB");
-insert into Academia(Academia) values ("CB");
-insert into Academia(Academia) values ("ELEC");
-insert into Academia(Academia) values ("INF");
-insert into Academia(Academia) values ("ME");
-insert into Academia(Academia) values ("SIST");
-
-/*insert into Alumnos values ("2015040820","12345","Nadia","Lopez","Tirado", 1 , 9,2,"1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com");
- insert into Alumnos values (2015040720,"12345","Nadia","Lopez","Tirado", 1 , 6,"Mujer","1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com"); comprobar checks de esta tabla */ 
-insert into Alumnos values (2015030721,"12345","Nadia","Lopez","Tirado", 1 , 4 ,2,"1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com","Baquetbol",7);
-insert into Alumnos values (2015170720,"123","Mauricio","Sanchez","Moreno", 1 , 4 ,1,"1999-09-19","55555555","5585963625", "mauricio@hotmail,com","Campismo",7);
-insert into Alumnos values (2015080720,"12","Ricardo","Flores","Lima", 1 , 4 ,1,"1999-01-13","58888888","5556465544", "ricardo@hotmail,com","Cilcismo",6);
-insert into Alumnos values (0908907876,"12345","Maria","Hernandez","Perez", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "maria_lopez@hotmail,com","Natacion",7);
-/*insert into Alumnos values ("2015020709","12340","ARTURO","LANDA","ESPINOSA", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "maria_lopez@hotmail,com","NATACION Y BASKET","SI");
-*/
-/*insert into Profesores values ("2589654510","123456","Marcela","Hernandez","Perez", 1 , "Mañana","12345678"); comprobar check*/
-insert into Profesores values ("2589654510","123456","Marcela","Hernandez","Perez", 2,1 , 1 ,"12345678",1);
-insert into Profesores values ("2576767687","1234","Hugo","Gonzalez","Casas", 1,1 , 2,"123456789",1);
-insert into Profesores values ("2345567890","12348","Martha","Hernandez","Hernandez", 2,1 , 3,"123456781",1);
 
          
          
@@ -753,4 +771,6 @@ create view View_Alumno_Tutor as
 						on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta;
 select * from View_Alumno_Tutor;
 
-select * from Estados;
+select * from Profesores;
+
+
