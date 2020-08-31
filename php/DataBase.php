@@ -16,59 +16,123 @@ class DataBase{
         }
     }
 /*--------------------------------------------------Views---------------------------------------------------*/
-    public static function Mostrar_Alumnos ($mysqli){//Recibe objeto de conexión
-
-        //$mysqli = new DataBase(); //Inicializo mi objeto
-        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM Alumnos";//Introduzco la consulta
-        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
-        $result->execute();  //Ejecuto la consulta
-        return ["Alumnos"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
-    }
  
+
+/*-------------------------------------------------General--------------------------------------------------*/
     public static function View_Acuses_Grupales($mysqli){
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_Acuses";//Introduzco la consulta
+        $query="SELECT * FROM View_Acuses_Todos";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $result->execute();  //Ejecuto la consulta
-        return ["Acuses"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+        return ["Acuses_General"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
-
+/*--------------------------------------------------Alumno-------------------------------------------------*/
     public static function View_Adeudos_Alumno($mysqli){
+        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_Adeudos_Alumno";//Introduzco la consulta
+        $query="SELECT * FROM View_Adeudos_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+        $Adeudos = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Adeudos->execute();  //Ejecuto la consulta
+
+        $query="SELECT IdEstado FROM Alumnos where NoBoleta='".$Boleta."' ";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
-        $result->execute();  //Ejecuto la consulta
-        return ["Adeudos_Alumno"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+        $result->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($result[0]['IdEstado']==6){//6 Irregular
+            $Situacion_Academica="Regular";
+        }
+        else{
+            $Situacion_Academica="Irregular";
+        }
+
+        return [
+            "Adeudos_Alumno"=>$Adeudos->fetchAll(PDO::FETCH_ASSOC),
+            "Situacion_Academica"=>$Situacion_Academica 
+        ];//Retorno la matriz en el formato
     }
 
-    public static function View_Tutor_Actual($mysqli){
+    public static function View_TutorActual_Alumno($mysqli){
+        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_Tutor_Actual";//Introduzco la consulta
+        $query="SELECT * FROM View_TutorActual_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $result->execute();  //Ejecuto la consulta
-        return ["Tutor_Actual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+        return ["TutorActual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
 
-    public static function View_Historial_Tutores_Alumno($mysqli){
+    public static function View_Historial_Alumno($mysqli){
+        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_Historial_Tutores_Alumno";//Introduzco la consulta
+        $query="SELECT * FROM View_Historial_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
         $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $Historial->execute();  //Ejecuto la consulta
 
-        $query="SELECT IdEstado FROM Alumnos";//Introduzco la consulta
-        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
-        $result->fetchAll(PDO::FETCH_ASSOC);
-        if ($result[0]['IdEstado']==6){//6 Irregular
-            $
-        }
-        else{
-
+        if ($Historial[0]['FechaT']=="null"){
+            $Historial[0]['FechaT']="Sin fecha de termino";
         }
         return [
-            "Historial"=>$Historial->fetchAll(PDO::FETCH_ASSOC),
-            "Situacion_Academica"
-            
+            "Historial"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
+/*--------------------------------------------------Profesor-------------------------------------------------*/
+
+    public static function View_Tutorados_Profesor($mysqli){
+        $NoEmpleado=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Tutorados_Profesor where NoEmpleado='".$NoEmpleado."' and where ";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "Tutorados"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
+    public static function View_Solicitudes_Profesor($mysqli){
+        $NoEmpleado=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Solicitudes_Profesor where NoEmpleado='".$NoEmpleado."'";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "Tutorados"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
+    /*-------------------------------------------Administrador-----------------------------------------------*/
+    public static function View_Tutores_Administrador($mysqli){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Tutores_Administrador";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "Tutores"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
+    public static function View_Tutorados_Administrador($mysqli){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Tutores_Administrador";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "Tutorados"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
+    public static function View_TutoradosByTutor_Administrador($mysqli,$IDTutor){
+
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Tutores_Administrador where NoEmpleado='".$IDTutor."' ";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "Tutorados"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
         ];//Retorno la matriz en el formato
     }
 /*----------------------------------------------Insercciones------------------------------------------------ */
