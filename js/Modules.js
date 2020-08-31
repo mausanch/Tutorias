@@ -115,19 +115,18 @@ function table_consultar_todos(uri, thead, tbody, columns, rowsindex){
 }
 
 //Es posible que pueda usar la función simple fetch
-function datatable_consultar_todos(uri, rowsindex, table, init, columns){
+export function datatable_consultar_todos(uri, rowsindex, table, init, columns){
     let datatable;
     return new Promise((resolve, reject)=>{
         fetch(uri, {
             method: 'GET'
         })
         .then(handleHttpErrors)
-        .then(res=>res.json())
+        .then(res=>res.json())//Para hacer pruebas pasar el .json a .text
         .then(res_json=>{
             console.log("Aquí");
             console.log(res_json);
-            let rows=res_json[rowsindex]; 
-            console.log(res_json);
+            let rows=res_json[rowsindex];
             datatable=table_generate_datatables(table, init, rows, columns);
             resolve(datatable);
         })
@@ -164,19 +163,4 @@ function table_eliminar(uri){
 }
 
 //ALUMNOS
-export function Alumnos_consultar(table, init){  //thead_migrantes, tbody_migrantes
-    return new Promise((resolve, reject)=>{
-        datatable_consultar_todos("php/res_migrantes.php", "migrantes", table, init, {
-            //Hace falta obtener el ID desde el View de MySQL, para poder hacer tratamientos posteriores
-            'ID' : "Id_Migrante",
-            'Nombre':'Nombre', 
-            'Apellido Paterno':'Apellido_Paterno', 
-            'Apellido Materno':'Apellido_Materno', 
-            'Pais':'Pais', 
-            'Punto de Control':'Punto_de_Control', 
-            'Estado':'Estado'
-        })
-        .then(datatable=>{resolve(datatable)})
-        .catch(e=>{reject(e)})
-    })
-}
+

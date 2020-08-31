@@ -1,6 +1,6 @@
-//import {Modulos correspondientes.}
+//import {Modulos correspondientes}
 
-import {Alumno_consultar,Validar_Sesion,Cerrar_Sesion} from './modules.js';
+import {datatable_consultar_todos,Validar_Sesion,Cerrar_Sesion} from './Modules.js';
 
 /*------------------------------------------------Tablas------------------------------------------------------*/
 
@@ -13,15 +13,13 @@ const form_Alumno_action = document.getElementById('f_Alumno_action');
 
 const B_Cerrar_Sesion=document.getElementById('B_Cerrar_Sesion');
 
-
-
 let id;
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
     //Validar_Sesion()
     
-    Alumno_consultar('#t_Alumnos', true)
+    Alumnos_consultar('#t_Alumnos', true)
     .then(datatable=>{
         new $.fn.dataTable.Buttons(datatable, { 
             buttons: 
@@ -80,6 +78,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
         );
     //action requiere una definición de una función, y no una llamada a una función. Por ello se hace una estructura arrow function, es decir ()=>{}
 });
+
+
+function Alumnos_consultar(table, init){  //thead_alumnos, tbody_alumnos
+    return new Promise((resolve, reject)=>{
+        datatable_consultar_todos("php/res_Alumnos.php", "Alumnos", table, init, {
+            'ID' : "Id_Migrante",
+            'Nombre':'Nombre', 
+            'Apellido Paterno':'Apellido_Paterno', 
+            'Apellido Materno':'Apellido_Materno', 
+            'Pais':'Pais', 
+            'Punto de Control':'Punto_de_Control', 
+            'Estado':'Estado'
+        })
+        .then(datatable=>{resolve(datatable)})
+        .catch(e=>{reject(e)})
+    })
+}
 
 
 form_Alumnos_registrar.onsubmit = function(e){

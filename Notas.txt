@@ -1,0 +1,23 @@
+Para subir cambios
+
+git add . 
+git commit -m "Explicación"
+git push origin master (.OJO. Hacer el pull antes de cualquier push)
+
+
+Recibir cambios 
+git pull origin master 
+
+
+Sintaxis Para nombres 
+
+
+NombreDeAcción_NombreDeAtributo_NombrePropietario_PluralOSingular
+
+Nombre De Acción= View,Insert,Delete,Etc
+
+Nombre De Atributo= Adeudos, Historial, Tutores, Etc
+
+Nombre de Propietario= Alumno, Administrador, Tutores
+
+Plural o Singular= Si es Alumno o Alumnos....
