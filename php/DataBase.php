@@ -26,6 +26,51 @@ class DataBase{
         return ["Alumnos"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
  
+    public static function View_Acuses_Grupales($mysqli){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Acuses";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        return ["Acuses"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+    }
+
+    public static function View_Adeudos_Alumno($mysqli){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Adeudos_Alumno";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        return ["Adeudos_Alumno"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+    }
+
+    public static function View_Tutor_Actual($mysqli){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Tutor_Actual";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        return ["Tutor_Actual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+    }
+
+    public static function View_Historial_Tutores_Alumno($mysqli){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_Historial_Tutores_Alumno";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+
+        $query="SELECT IdEstado FROM Alumnos";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->fetchAll(PDO::FETCH_ASSOC);
+        if ($result[0]['IdEstado']==6){//6 Irregular
+            $
+        }
+        else{
+
+        }
+        return [
+            "Historial"=>$Historial->fetchAll(PDO::FETCH_ASSOC),
+            "Situacion_Academica"
+            
+        ];//Retorno la matriz en el formato
+    }
 /*----------------------------------------------Insercciones------------------------------------------------ */
 
     public static function Crear_Alumno ($mysqli,$Nombre, $Apellido_Paterno, $Apellido_Materno, $Fecha_Nacimiento, $Ciudad, $Pais, $Oficio, $Contacto_Telefono, $Nivel_Educativo, $Situacion_Familiar, $Causa_Migracion, $Llave){
