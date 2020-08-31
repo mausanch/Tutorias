@@ -62,7 +62,7 @@ use ProyectoTutoriasFinal;
            
          DROP TABLE IF EXISTS  Profesores;           
 		create table Profesores(
-				NoEmpleado varchar(20) not null,
+				NoEmpleado int(10)  not null,
 				Contrasenia varchar(100) not null, 
 				Nombre varchar(30)not null,
 				Paterno varchar(20)not null ,
@@ -82,7 +82,7 @@ use ProyectoTutoriasFinal;
 		create table AlumnoProfesor (
 			IdAlumnoProfesor int not null auto_increment,
 			NoBoleta int(20) not null,
-			NoEmpleado varchar(20) not null,
+			NoEmpleado int(20) not null,
 			IdEstado int not null check(IdEstado in(4,5,10,11,12)), /*4-Pendiente, 5-Sin asignar 10-Finalizado 11-Aceptado 12-Rechazado*/
             FechaSolicitud date not null,
 			primary key(IdAlumnoProfesor),
@@ -587,7 +587,7 @@ SELECT
 
 /*Insert*/
 insert into sexoAP values (1,"Masculino"),
-							(2,"Femenino");
+						  (2,"Femenino");
 	
 insert into Estados(Estado) values ("Activo"),/*Profesor en labores y  relacion Tutor-Tutorados*/
 								   ("Suspendido"),/*Profesor en sabatico  Alumno suspendido*/
