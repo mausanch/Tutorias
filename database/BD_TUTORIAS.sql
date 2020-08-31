@@ -220,7 +220,7 @@ insert into Profesores values (2345567890,"12348","Martha","Hernandez","Hernande
 insert into Alumnos values (2015030721,"12345","Nadia","Lopez","Tirado", 1 , 4 ,2,"1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com","Baquetbol",7);
 insert into Alumnos values (2015170720,"123","Mauricio","Sanchez","Moreno", 1 , 4 ,1,"1999-09-19","55555555","5585963625", "mauricio@hotmail,com","Campismo",7);
 insert into Alumnos values (2015080720,"12","Ricardo","Flores","Lima", 1 , 4 ,1,"1999-01-13","58888888","5556465544", "ricardo@hotmail,com","Cilcismo",6);
-insert into Alumnos values ("2015020709","12340","ARTURO","LANDA","ESPINOSA", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "arturolandae@hotmail,com","NATACION Y BASKET",7);
+insert into Alumnos values (2015020709,"12340","ARTURO","LANDA","ESPINOSA", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "arturolandae@hotmail,com","NATACION Y BASKET",7);
 
 insert into AlumnoProfesor values (1,2015030721,2589654510,11,"2020-08-18");
 insert into AlumnoProfesor values (2,2015170720,2589654510,11,"2020-08-17");
