@@ -41,10 +41,10 @@ use ProyectoTutoriasFinal;
         DROP TABLE IF EXISTS  Alumnos;
         create table Alumnos(
 			NoBoleta int(10) not null, 
-			Contraseña varchar(20) not null,
+			Contrasenia varchar(100) not null,
 			Nombre  varchar(30)not null ,
-			APaterno varchar(30)not null ,
-			AMaterno varchar(30)not null ,
+			Paterno varchar(30)not null ,
+			Materno varchar(30)not null ,
 			IdCarrera int not null,
 			Semestre int not null check(Semestre between 1 and 15),
 			IdGenero int not null ,
@@ -63,10 +63,10 @@ use ProyectoTutoriasFinal;
          DROP TABLE IF EXISTS  Profesores;           
 		create table Profesores(
 				NoEmpleado varchar(20) not null,
-				ContraseniaP varchar(20) not null, 
-				NombreP varchar(30)not null,
-				APaternoP varchar(20)not null ,
-				AMaternoP varchar(30)not null ,
+				Contrasenia varchar(100) not null, 
+				Nombre varchar(30)not null,
+				Paterno varchar(20)not null ,
+				Materno varchar(30)not null ,
                 IdGenero int not null ,
 				IdAcademia int not null,
 				IdTurno int  not null ,
