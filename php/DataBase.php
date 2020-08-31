@@ -19,7 +19,7 @@ class DataBase{
  
 
 /*-------------------------------------------------General--------------------------------------------------*/
-    public static function View_Acuses_Grupales($mysqli){
+    public static function View_Acuses_General ($mysqli){
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
         $query="SELECT * FROM View_Acuses_Todos";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
@@ -84,7 +84,7 @@ class DataBase{
         $NoEmpleado=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
 
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_Tutorados_Profesor where NoEmpleado='".$NoEmpleado."' and where ";//Introduzco la consulta
+        $query="SELECT * FROM View_Tutorados_Profesor where NoEmpleado='".$NoEmpleado."' and where IdEstado=11";//Introduzco la consulta
         $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $Historial->execute();  //Ejecuto la consulta
         return [
@@ -96,7 +96,7 @@ class DataBase{
         $NoEmpleado=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
 
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_Solicitudes_Profesor where NoEmpleado='".$NoEmpleado."'";//Introduzco la consulta
+        $query="SELECT * FROM View_Solicitudes_Profesor where NoEmpleado='".$NoEmpleado."' and where IdEstado=4";//Introduzco la consulta
         $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $Historial->execute();  //Ejecuto la consulta
         return [
@@ -104,7 +104,19 @@ class DataBase{
         ];//Retorno la matriz en el formato
     }
 
-    /*-------------------------------------------Administrador-----------------------------------------------*/
+    public static function View_TutoradosDetalle_Profesor($mysqli,$IDAlumno){
+        $NoEmpleado=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        $query="SELECT * FROM View_TutoradosDetalle_Profesor where NoBoleta='".$IDAlumno."'";//Introduzco la consulta
+        $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $Historial->execute();  //Ejecuto la consulta
+        return [
+            "TutoradosDetalle"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+        ];//Retorno la matriz en el formato
+    }
+
+/*-----------------------------------------------Administrador----------------------------------------------------*/
     public static function View_Tutores_Administrador($mysqli){
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
         $query="SELECT * FROM View_Tutores_Administrador";//Introduzco la consulta
