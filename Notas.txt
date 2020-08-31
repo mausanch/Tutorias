@@ -21,3 +21,11 @@ Nombre De Atributo= Adeudos, Historial, Tutores, Etc
 Nombre de Propietario= Alumno, Administrador, Tutores
 
 Plural o Singular= Si es Alumno o Alumnos....
+
+
+Puntos faltantes;
+
+-Procedimientos para aceptar tutor
+-triggers 
+-Motivo de rechazo en solicitudes por parte del profesor
+-Cambios de profesores
