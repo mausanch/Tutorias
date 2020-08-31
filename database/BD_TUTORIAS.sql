@@ -3,192 +3,125 @@ create database ProyectoTutoriasFinal;
 use ProyectoTutoriasFinal;
 
 		create table Carreras(
-		IdCarrera int AUTO_INCREMENT  , 
-		carrera varchar (40),
-		primary key(IdCarrera)
+		IdCarrera int AUTO_INCREMENT  not null ,
+		Carrera varchar (35) not null ,
+		primary key (IdCarrera)
 		);
-        
-/*relacion carrera materias */
+
 		create table Materias(
-		IdMateria int not null AUTO_INCREMENT, /*nota*/
-		Materia varchar(80) not null,
-		primary key(IdMateria));
+		IdMateria int AUTO_INCREMENT  not null,
+		Materia varchar(50) not null,
+		primary key(IdMateria)
+        );
        
 		create table Academia(
-		IdAcademia int AUTO_INCREMENT ,
-		Academia varchar(30) not null,
+		IdAcademia int AUTO_INCREMENT  not null,
+		Academia varchar(6) not null,
 		primary key(IdAcademia)
 		);
         
+		create table Genero(
+        IdGenero int AUTO_INCREMENT not null,
+        Genero varchar(15) not null,
+        primary key (IdGenero)
+        );
+        
+        create table Estados(
+        IdEstado int AUTO_INCREMENT  not null,
+        Estado varchar(15)  not null,
+        primary key (IdEstado)
+        );
+        
+        create table Turnos(
+        IdTurno int  AUTO_INCREMENT not null,
+        Turno varchar(12) not null,
+        primary key (IdTurno)
+        );
+        
+        DROP TABLE IF EXISTS  Alumnos;
         create table Alumnos(
-			NoBoleta varchar(20) not null,
-			Contrasenia varchar(20) not null, 
+			NoBoleta int(10) not null, 
+			Contraseña varchar(20) not null,
 			Nombre  varchar(30)not null ,
-			APaterno varchar(20)not null ,
+			APaterno varchar(30)not null ,
 			AMaterno varchar(30)not null ,
-			IdCarrera int not null, 
-			Semestre int not null check(Semestre between 1 and 10),
-			Sexo varchar(40) not null check (Sexo in ('Masculino','Femenino')),
+			IdCarrera int not null,
+			Semestre int not null check(Semestre between 1 and 15),
+			IdGenero int not null ,
 			FechaNacimiento date not null,
 			TelFijo varchar(10) null,
 			Celular varchar(10) not null ,
 			CorreoElectronico varchar(50) not null,
+            Hobby varchar(300) not null,
+            IdEstado int not null check(IdEstado in ('6','7')), /*6-Regular, 7-Irregular*/
 			primary key(NoBoleta),
-			foreign key(IdCarrera) references Carreras(IdCarrera)
+			foreign key(IdCarrera) references Carreras(IdCarrera),
+			foreign key(IdEstado) references Estados(IdEstado),
+            foreign key (IdGenero) references Genero(IdGenero) 
            );
            
+         DROP TABLE IF EXISTS  Profesores;           
 		create table Profesores(
 				NoEmpleado varchar(20) not null,
 				ContraseniaP varchar(20) not null, 
 				NombreP varchar(30)not null,
 				APaternoP varchar(20)not null ,
 				AMaternoP varchar(30)not null ,
+                IdGenero int not null ,
 				IdAcademia int not null,
-				Turno varchar(13)  not null check (Turno in ('Matutino','Vespertino','Mixto')),
+				IdTurno int  not null ,
 				ClaveAcepta varchar(10)not null,
+                IdEstado int not null check(IdEstado in(1,2,3)), /*1-Activo,2-Suspendido.3-Inactivo*/
 				primary key(NoEmpleado),
-				foreign key(IdAcademia) references Academia(IdAcademia)
+				foreign key(IdAcademia) references Academia(IdAcademia),
+                foreign key(IdEstado) references Estados(IdEstado),
+                foreign key(IdTurno) references Turnos(IdTurno),
+                foreign key (IdGenero) references Genero(IdGenero) 
 		);
         
 		create table AlumnoProfesor (
 			IdAlumnoProfesor int not null auto_increment,
-			NoBoleta varchar(20) not null,
+			NoBoleta int(20) not null,
 			NoEmpleado varchar(20) not null,
-			ClaveAceptaR varchar(10)not null,
-			State varchar(20) not null,
+			IdEstado int not null check(IdEstado in(4,5,10,11,12)), /*4-Pendiente, 5-Sin asignar 10-Finalizado 11-Aceptado 12-Rechazado*/
+            FechaSolicitud date not null,
 			primary key(IdAlumnoProfesor),
 			foreign key(NoBoleta) references Alumnos(NoBoleta),
+			foreign key(IdEstado) references Estados(IdEstado),
 			foreign key(NoEmpleado) references Profesores(NoEmpleado)
-			);
-        drop table if exists AlumnoProfesorV;
-		create table AlumnoProfesorV ( /*restriccion clave de aceptacion repeticion*/
-				IdAlumnoProfesor int not null auto_increment,
-				NoBoleta varchar(20) not null,
-				ClaveAceptaR varchar(10)not null,
-				State varchar(20) not null,
-				primary key(IdAlumnoProfesor),
-				foreign key(NoBoleta) references Alumnos(NoBoleta)
-				);
+			);        
         
         create table Historial(
-				idHistorial int auto_increment,
+				IdHistorial int auto_increment not null,
 				IdAlumnoProfesor int,
-				Fecha date not null,
-				StateH varchar(20) not null,
-				primary key (idHistorial),
+				FechaInicio date not null,
+				FechaTermino date null,
+				IdEstado int not null check(IdEstado in(1,10)),
+				primary key (IdHistorial),
+				foreign key(IdEstado) references Estados(IdEstado),
 				foreign key(IdAlumnoProfesor) references AlumnoProfesor(IdAlumnoProfesor)
 		);
-		create table Adeudos(
-				idAdeudo int auto_increment,
-				NoBoleta varchar(20) not null,
-				IdMateria int not null,
-				primary key (idAdeudo),
-				foreign key(NoBoleta) references Alumnos(NoBoleta),
-				foreign key(IdMateria) references Materias(IdMateria)
+        
+		create table AdeudosAlumno(
+				IdAdeudo int auto_increment not null,
+				NoBoleta int(20) not null,
+				primary key (IdAdeudo),
+				foreign key(NoBoleta) references Alumnos(NoBoleta)
 			);
-
-insert into Carreras(carrera) values ("Ingenieria Telemática");
-insert into Carreras(carrera) values ("Ingenieria Mecatrónica");
-insert into Carreras(carrera) values ("Ingenieria Bionica");
-insert into Carreras(carrera) values ("Ingenieria en Energia");
-insert into Carreras(carrera) values ("Ingenieria en Sistemas Automotrices");
-
-insert into Materias (Materia) values   ("PROGRAMACION"),
-									    ("ANALISIS Y DISEÑO DE SISTEMAS"),
-									    ("ESTRUCTURA DE DATOS"),
-										("ADMINISTRACION DE SISTEMAS OPERATIVOS"),
-										("DISEÑO DIGITAL"),
-										("ARQUITECTURA DE COMPUTADORAS"),
-										("FUNDAMENTOS DE FISICA"),
-										("ECUACIONES DIFERENCIALES"),
-										("PROBABILIDAD"),
-										("CALCULO DIFERENCIAL E INTEGRAL"),
-										("VARIABLE COMPLEJA"), 
-										("ALGEBRA LINEAL"),
-										("ELECTROMAGNETISMO"),
-										("CALCULO MULTIVARIABLE"),
-										("ADMINISTRACION ORGANIZACIONAL"),
-										("ETICA, PROFESION Y SOCIEDAD"),
-										("COMUNICACION ORAL Y ESCRITA"),
-										("INGLES I"),
-										("INGLES II"),
-										("PROGRAMACION ESTRUCTURADA"),
-										("SOCIEDAD, CIENCIA Y TECNOLOGIA"),
-										("SEÑALES Y SISTEMAS"),
-										("PROPAGACION DE ONDAS ELECTROMAGNETICAS"),
-										("ELECTRONICA"),
-										("TEORIA DE LOS CIRCUITOS"),
-										("TEORIA DE LA INFORMACION"),
-										("TEORIA DE LAS COMUNICACIONES"),
-										("COMUNICACIONES DIGITALES"),
-										("PROCESAMIENTO DIGITAL DE SEÑALES"),
-										("TELEFONIA"),
-										("SISTEMAS CELULARES"),
-										("PROTOCOLOS DE INTERNET"),
-										("SISTEMAS DISTRIBUIDOS"),
-										("INGENIERIA WEB"),
-										("PROGRAMACION AVANZADA"),
-										("BASES DE DATOS"),
-										("TRANSMISION DE DATOS"),
-										("INFORMACION FINANCIERA E INGENIERIA ECONOMICA"),
-										("OPTATIVA I"),
-										("INGLES III"),
-										("METODOS NUMERICOS"),
-										("ELECTRONICA PARA COMUNICACIONES"),
-										("OPTICA"),
-										("DESARROLLO SUSTENTABLE"),
-										("ECONOMIA PARA INGENIEROS"),
-										("INGLES IV"),
-										("REDES INALAMBRICAS"),
-										("REDES NEURONALES"),
-										("LOGICA DIFUSA"),
-										("SISTEMAS DE INFORMACION GEOGRAFICA"),
-										("PROGRAMACION DE DISPOSITIVOS MOVILES"),
-										("NORMATIVIDAD EN TELECOMUNICACIONES E INFORMATICA");
-
-insert into Academia(Academia) values ("Telemática");
-insert into Academia(Academia) values ("Mecatronica");
-insert into Academia(Academia) values ("Bionica");
-insert into Academia(Academia) values ("ISISA");
-insert into Academia(Academia) values ("Administración");
-insert into Academia(Academia) values ("Humanidades");
-insert into Academia(Academia) values ("Ingles");
-insert into Academia(Academia) values ("Cultura y deporte");
-insert into Academia(Academia) values ("Quimica y Biologia");
-insert into Academia(Academia) values ("Ciencias Basicas");
-insert into Academia(Academia) values ("Electronica");
-insert into Academia(Academia) values ("Informatica");
-insert into Academia(Academia) values ("Mecanica");
-insert into Academia(Academia) values ("Sistemas");
-
-/*insert into Alumnos values (2015040720,"12345","Nadia","Lopez","Tirado", 1 , 12,"Femenino","1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com");
- insert into Alumnos values (2015040720,"12345","Nadia","Lopez","Tirado", 1 , 6,"Mujer","1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com"); comprobar checks de esta tabla */ 
-insert into Alumnos values ("2015030720","12345","Nadia","Lopez","Tirado", 1 , 4 ,"Femenino","1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com");
-insert into Alumnos values ("2015170720","123","Mauricio","Sanchez","Moreno", 1 , 4 ,"Masculino","1999-09-19","55555555","5585963625", "mauricio@hotmail,com");
-insert into Alumnos values ("2015070720","12","Ricardo","Flores","Lima", 1 , 4 ,"Masculino","1999-01-13","58888888","5556465544", "ricardo@hotmail,com");
-insert into Alumnos values ("2015020720","12345","Maria","Hernandez","Perez", 2 , 6 ,"Femenino","1999-10-18","58302940","5523258868", "maria_lopez@hotmail,com");
-
-/*insert into Profesores values ("2589654510","123456","Marcela","Hernandez","Perez", 1 , "Mañana","12345678"); comprobar check*/
-insert into Profesores values ("2589654510","123456","Marcela","Hernandez","Perez", 1 , "Matutino","12345678");
-insert into Profesores values ("2576767687","1234","Hugo","Gonzalez","Casas", 1 , "Vespertino","123456789");
-insert into Profesores values ("2345567890","12348","Martha","Hernandez","Hernandez", 1 , "Mixto","123456781");
-
-/*insert into AlumnoProfesorV(NoBoleta,NoEmpleado,ClaveAceptaR,State) 
-values ("2015030720","2345567890","123456785","pendiente"); comprobar clavee*/
-
-/*insert into AlumnoProfesorV(NoBoleta,ClaveAceptaR,State) 
-          values ("2015030720","123456781","pendiente"); <------------------PRUEBA*/
-/*insert into AlumnoProfesorV(NoBoleta,NoEmpleado,ClaveAceptaR,State) 
-         values ("2015070720","2576767687","12","aceptado");
-insert into AlumnoProfesorV(NoBoleta,NoEmpleado,ClaveAceptaR,State) 
-         values ("2015170720","2589654510","12345678","pendiente");
-insert into AlumnoProfesorV(NoBoleta,NoEmpleado,ClaveAceptaR,State) 
-         values ("2015020720","2589654510","12345678","pendiente");*/
-         
-         
- /*Poner dos botones, tienes adeudos  sí y no, si es sí que mande un formulario para seleccionar materia una por una*/
-INSERT into Adeudos(NoBoleta, IdMateria) values("2015030720","5");
-INSERT into Adeudos(NoBoleta, IdMateria) values("2015030720","1");
+		create table AdeudosMaterias(
+					IdAdeudo int not null,
+                    IdMateria int not null,
+					IdEstado int not null check(IdEstado in ('8','9')), /*8-Reprobada 9-Aprobada*/
+					foreign key(IdEstado) references Estados(IdEstado),
+                    foreign key(IdAdeudo) references AdeudosAlumno(IdAdeudo),
+                    foreign Key(IdMateria) references Materias(IdMateria)
+        );
+        
+        
+        
+    
+    
+    
     
      /***********INICIAR SESION*********/   
 drop procedure if exists InicioSesionAlumno;
@@ -211,24 +144,6 @@ select msj as Resultado;
 end; **
 delimiter ;
 
- /***********COMPARAR CLAVE DE ACEPTACION*********/   
-drop trigger if exists Tutor;
-delimiter **
-create trigger Tutor after insert on AlumnoProfesorV
- FOR EACH ROW 
-begin 
-declare validar varchar(20);
-declare empleado varchar(20);
-set empleado=(select NoEmpleado from Profesores where ClaveAcepta=new.ClaveAceptaR);
-set validar= (select ClaveAcepta from Profesores where ClaveAcepta=new.ClaveAceptaR );
-if (validar=new.ClaveAceptaR) then
-insert into AlumnoProfesor(NoBoleta,NoEmpleado,ClaveAceptaR,State) 
-       values (new.NoBoleta,empleado,new.ClaveAceptaR,new.State);
-       end if;
-end;**
-
-
-
 /***********CAMBIAR ESTADO CUANDO PROFESOR ACEPTA TUTORADO Y LLENAR HISTORIAL*********/   
 drop trigger if exists CambioStatus;
 delimiter **
@@ -236,12 +151,41 @@ create trigger CambioStatus after update on AlumnoProfesor /*Cambiar update cuan
  FOR EACH ROW 
 begin 
 
-if (new.State="aceptado") then
-	   insert into Historial(idAlumnoProfesor, Fecha, StateH) 
-       values (new.idAlumnoProfesor,now(),"activo") ;
-	             
+if (new.IdEstado="aceptado") then
+	   insert into Historial(idAlumnoProfesor, Fecha, IdEstado) 
+       values (new.idAlumnoProfesor,now(),"activo") ;	             
        end if;
 end;**
+/*-----------------------Cambiar estado de AlumnoProfesor a sin asignar------------------------*/
+use ProyectoTutoriasFinal
+delimiter **
+create trigger ActualizarRelacion
+after update on Profesores
+for each row 
+BEGIN
+if (new.IdEstado=5) then
+	   update AlumnoProfesor
+       set IdEstado=4 
+       where NoEmpleado=(select NoEmpleado from Profesores where NoEmpleado=new.NoEmpleado);
+	end if;
+END;**
+/*-----------------------------------Pruebas-------------------------*/
+UPDATE Profesores set IdEstado=5 where NoEmpleado='2345567890';
+select * from Profesores;
+select * from Alumnos;
+select * from alumnoprofesor;
+select * from Estados;
+
+/*-------------------Crea IdAdeudo en AdeudosAlumnos-----------------*/
+delimiter **
+create trigger RegistrarAdeudos
+after insert on Alumnos
+for each row 
+BEGIN
+if (new.IdEstado=6) then
+	   insert into AdeudosAlumno(NoBoleta) values (new.NoBoleta);
+	end if;
+END;**
 
 /***********ACEPTAR ALUMNO*********/   
 drop procedure if exists AceptarTutorado;
@@ -249,11 +193,9 @@ delimiter **
 create procedure AceptarTutorado(in boleta varchar(20), in empleado varchar(20))
 begin
 	update AlumnoProfesor
-			set State="aceptado"
+			set IdEstado="aceptado"
              where NoBoleta=boleta and NoEmpleado=empleado;
-    update AlumnoProfesorV
-			set State="aceptado"
-             where NoBoleta=boleta;         
+            
 		end; **
 delimiter ;
 
@@ -269,7 +211,7 @@ delimiter **
 create procedure RechazarTutorado(in boleta varchar(20), in empleado varchar(20))
 begin
 	update AlumnoProfesor
-			set State="rechazado"
+			set IdEstado="rechazado"
              where NoBoleta=boleta and NoEmpleado=empleado;
 		end; **
 delimiter ;
@@ -282,12 +224,12 @@ delimiter **
 create procedure ConsultarTutor(in boleta varchar(20))
 begin
 	select NombreP, APaternoP, AMAternoP, AlumnoProfesor.IdAlumnoProfesor from Profesores,AlumnoProfesor, Historial
-    where NoBoleta=boleta and AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor and StateH="activo"
+    where NoBoleta=boleta and AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor and IdEstado="activo"
     and AlumnoProfesor.NoEmpleado=Profesores.NoEmpleado;
    end; **
 delimiter ;
 
-/*call ConsultarTutor("2015030720"); <------------------PRUEBA*/
+/*call ConsultarTutor("2015030721"); <------------------PRUEBA*/
 
 /***********CONSULTAR ALUMNOS DE UN TUTOR*********/ 
 drop procedure if exists ConsultarAlumnos;
@@ -295,13 +237,13 @@ delimiter **
 create procedure ConsultarAlumnos(in empleado varchar(20))
 begin
 	select Nombre, APaterno, AMAterno, AlumnoProfesor.IdAlumnoProfesor from Alumnos,AlumnoProfesor, Historial
-    where NoEmpleado=empleado and AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor and StateH="activo"
+    where NoEmpleado=empleado and AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor and IdEstado="activo"
     and AlumnoProfesor.NoBoleta=Alumnos.NoBoleta;
 end; **
 delimiter ;
 
 /*call ConsultarAlumnos("2345567890"); <------------------PRUEBA*/
-/*trigger hasta 5 tutores */
+
 /*INGRESAR UN NUEVO TUTOR*/
 drop procedure if exists NuevoTutor;
 delimiter **
@@ -310,23 +252,20 @@ begin
 declare validar int;
 set validar= (select IdAlumnoProfesor from AlumnoProfesor where NoBoleta=boleta);
 update Historial 
-set StateH="inactivo"
+set IdEstadoH="Finalizado"
 where IdAlumnoProfesor=validar;
 
-update AlumnoProfesorV
-set State="finalizado"
-where NoBoleta=boleta;
-insert into AlumnoProfesorV(NoBoleta,ClaveAceptaR,State) 
+insert into AlumnoProfesorV(NoBoleta,ClaveAceptaR,IdEstado) 
        values (boleta, clave,"pendiente");
 
        
        end; **
 delimiter ;
 
-/*call NuevoTutor("2015030720", "123456789"); <------------------PRUEBA */
+/*call NuevoTutor("2015030721", "123456789"); <------------------PRUEBA */
 
 
-/*Visualizar Tablas*/
+/*Visualizar Tablas
 select*from Academia;
 select*from  Materias;
 select*from  AlumnoProfesor;
@@ -334,14 +273,17 @@ select*from AlumnoProfesorV;
 select*from Alumnos;
 select * from Profesores;
 select * from Carreras; 
-select * from Historial;  /*historial de rechazo*/
+select * from Historial; */
+
+
+
 
 /**********************views******************/
 
 drop view if exists Historial_Pendientes;
 Create VIEW Historial_Pendientes AS 
 			SELECT * FROM AlumnoProfesor
-				WHERE State = "Pendiente";  
+				WHERE IdEstado = "Pendiente";  
  
 drop view if exists Vista_Alumnos;
 create VIEW Vista_Alumnos AS 
@@ -361,17 +303,17 @@ SELECT Alumnos.Nombre as "Nombre(s)",
        Alumnos.APaterno as "Apellido Paterno",
 	   Alumnos.AMaterno as "Apellido Materno",
        Alumnos.NoBoleta as "Numero de Boleta",
-       Historial.StateH as "Status"
+       Historial.IdEstado as "Status"
     FROM Alumnos INNER JOIN AlumnoProfesor 
 						ON AlumnoProfesor.NoBoleta = Alumnos.NoBoleta
 				INNER JOIN Historial 
 						ON AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor
-								WHERE Historial.StateH="aceptado";
+								WHERE Historial.IdEstado="aceptado";
                                 
 /***************Visualizar vistas*************/                          
-select * from Tutores_Activos;
+/*select * from Tutores_Activos;
 select *from Historial_Pendientes ;
-select *from Vista_Alumnos;
+select *from Vista_Alumnos;*/
                             
 /***********************procedimientos extras ALUMNOS**********************/  
 
@@ -385,8 +327,7 @@ begin
 end; **
 delimiter ;                                
 
-/*call CambiarContraseniaAlumno("2015030720","12349"); <------------------PRUEBA*/ 
-/*olvido de contraseña, confirmacion de nueva contraseña*/
+/*call CambiarContraseniaAlumno("2015030720","12349"); <------------------PRUEBA*/
  
 
 drop procedure if exists CambiarCarreraAlumno ;
@@ -552,12 +493,13 @@ delimiter ;
 /*call Numero_Tutores("2015030720"); <------------------PRUEBA*/
 
 
-/*---------------------------------------------------------------------------Dorime-----------------------------------------------------------------------------*/ 
-
+/**---------------------------------------------------------------------------Dorime-----------------------------------------------------------------------------*/ 
+/*
 select *from Vista_Alumnos where NoBoleta=2015020720;
 select * from AlumnoProfesor  where NoEmpleado=2589654510;
 SELECT* FROM HISTORIAL;
 select *from Profesores;
+*/
 
 
 	drop view if exists EstadoTutorados;	
@@ -568,7 +510,7 @@ select *from Profesores;
 		   Alumnos.AMaterno as "Apellido Materno",
 		   Alumnos.NoBoleta as "Numero de Boleta",
 		   Profesores.NoEmpleado,
-		   Historial.StateH
+		   Historial.IdEstado
 		FROM Alumnos INNER JOIN AlumnoProfesor 
 							ON AlumnoProfesor.NoBoleta = Alumnos.NoBoleta
 					Inner JOIN Profesores 
@@ -576,13 +518,8 @@ select *from Profesores;
 					Inner join Historial
 							ON AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor;
 
-/*insert into AlumnoProfesorV(NoBoleta,ClaveAceptaR,State) 
-         values ("2015070720","12","aceptado");
-insert into AlumnoProfesorV(NoBoleta,ClaveAceptaR,State) 
-         values ("2015170720","12345678","pendiente");
-insert into AlumnoProfesorV(NoBoleta,ClaveAceptaR,State) 
-         values ("2015020720","12345678","pendiente");
-select *from EstadoTutorados where NoEmpleado=2345567890;*/
+
+
 
 drop view if exists DatosProfesor;	
 	create view DatosProfesor as 
@@ -592,11 +529,11 @@ drop view if exists DatosProfesor;
 		   Profesores.AMaternoP as "Apellido Materno",
 		   Profesores.NoEmpleado
 		FROM Profesores; 
-        
+        /*
    select *from DatosProfesor where NoEmpleado=2345567890;
+   */
    
-   
-   
+   drop view if exists Tutor_Totorado;
 create  view Tutor_Tutorado as 
 SELECT
 	Alumnos.NoBoleta,
@@ -604,19 +541,19 @@ SELECT
     Alumnos.APaterno as "Apellido Paterno",
     Alumnos.AMaterno as "Apellido Materno",
     profesores.NoEmpleado, 
-    alumnoprofesor.State "Estado"
+    alumnoprofesor.IdEstado "Estado"
     FROM Alumnos INNER JOIN AlumnoProfesor 
 						ON AlumnoProfesor.NoBoleta = Alumnos.NoBoleta
 				INNER JOIN profesores
 						ON alumnoprofesor.NoEmpleado=profesores.NoEmpleado;
-					
+			/*		
                         
  select *from Tutor_Tutorado where NoEmpleado="2589654510";
  select Materia from Materias;
  
- select *from adeudos;
-
-
+ select *from adeudos;*/
+/*
+drop view if exists Adeudos_Materia; 
 create view Adeudos_Materia as 
     select 
     adeudos.idAdeudo as "Número de materia",
@@ -628,13 +565,13 @@ create view Adeudos_Materia as
      from alumnos inner Join adeudos 
 						on adeudos.NoBoleta=alumnos.NoBoleta
 				  inner Join materias 
-						on adeudos.IdMateria=materias.IdMateria;
-                        
+						on adeudos.IdMateria=materias.IdMateria;*/
+        /*                
 		select *from Adeudos_Materia where NoBoleta='2015070720';
         
         select *from profesores;
         
-        select *from Academia;
+        select *from Academia;*/
 create  view Profesores_Tutores as 
 SELECT
     profesores.NoEmpleado,
@@ -644,11 +581,176 @@ SELECT
     profesores.AMaternoP  as "Turno",
     Academia.Academia as "Academia"
     FROM Profesores inner Join Academia 
-						on Academia.IdAcademia=Profesores.IdAcademia;
+						on Academia.IdAcademia=Profesores.IdAcademia;                        
                         
-                        
-select *from Profesores_Tutores; 
+/*select *from Profesores_Tutores; */
+
+/*Insert*/
+insert into sexoAP values (1,"Masculino"),
+							(2,"Femenino");
+	
+insert into Estados(Estado) values ("Activo"),/*Profesor en labores y  relacion Tutor-Tutorados*/
+								   ("Suspendido"),/*Profesor en sabatico  Alumno suspendido*/
+								   ("Inactivo"),/*Alumno dado de baja o Profesor fuera del instituto*/  
+								   ("Pendiente"),/*Solicitud de Tutorado*/
+								   ("Sin Asignar"),/*Ha alcanzado el maximo de Tutores*/                                 
+								   ("Regular"),/*Situacion academica del alumno*/
+								   ("Iregular"),/*Situacion academica del alumno*/
+								   ("Reprobada"),/*Status de la materia*/
+								   ("Aprobada"),/*Status de la materia*/
+                                   ("Finalizado"),/*Finalizar Relacion Tutor-Tutorado*/
+                                   ("Aceptado"),/*Solicitud aceptada*/
+                                   ("Rechazado");/*Solicitud Rechazada*/
+                                   
+insert into Turnos(Turno) values ("Matutino"),
+								 ("Vespertino"),
+								 ("Mixto");
+                                
+insert into Carreras(carrera) values ("Ing. Telemática");
+insert into Carreras(carrera) values ("Ing. Mecatrónica");
+insert into Carreras(carrera) values ("Ing. Bionica");
+insert into Carreras(carrera) values ("Ing. en Energia");
+insert into Carreras(carrera) values ("Ing. en Sistemas Automotrices");
+
+insert into Materias (Materia) values   ("PROGRAMACION"),
+									    ("ANALISIS Y DISEÑO DE SISTEMAS"),
+									    ("ESTRUCTURA DE DATOS"),
+										("ADMINISTRACION DE SISTEMAS OPERATIVOS"),
+										("DISEÑO DIGITAL"),
+										("ARQUITECTURA DE COMPUTADORAS"),
+										("FUNDAMENTOS DE FISICA"),
+										("ECUACIONES DIFERENCIALES"),
+										("PROBABILIDAD"),
+										("CALCULO DIFERENCIAL E INTEGRAL"),
+										("VARIABLE COMPLEJA"), 
+										("ALGEBRA LINEAL"),
+										("ELECTROMAGNETISMO"),
+										("CALCULO MULTIVARIABLE"),
+										("ADMINISTRACION ORGANIZACIONAL"),
+										("ETICA, PROFESION Y SOCIEDAD"),
+										("COMUNICACION ORAL Y ESCRITA"),
+										("INGLES I"),
+										("INGLES II"),
+										("PROGRAMACION ESTRUCTURADA"),
+										("SOCIEDAD, CIENCIA Y TECNOLOGIA"),
+										("SEÑALES Y SISTEMAS"),
+										("PROPAGACION DE ONDAS ELECTROMAGNETICAS"),
+										("ELECTRONICA"),
+										("TEORIA DE LOS CIRCUITOS"),
+										("TEORIA DE LA INFORMACION"),
+										("TEORIA DE LAS COMUNICACIONES"),
+										("COMUNICACIONES DIGITALES"),
+										("PROCESAMIENTO DIGITAL DE SEÑALES"),
+										("TELEFONIA"),
+										("SISTEMAS CELULARES"),
+										("PROTOCOLOS DE INTERNET"),
+										("SISTEMAS DISTRIBUIDOS"),
+										("INGENIERIA WEB"),
+										("PROGRAMACION AVANZADA"),
+										("BASES DE DATOS"),
+										("TRANSMISION DE DATOS"),
+										("INFORMACION FINANCIERA E INGENIERIA ECONOMICA"),
+										("OPTATIVA I"),
+										("INGLES III"),
+										("METODOS NUMERICOS"),
+										("ELECTRONICA PARA COMUNICACIONES"),
+										("OPTICA"),
+										("DESARROLLO SUSTENTABLE"),
+										("ECONOMIA PARA INGENIEROS"),
+										("INGLES IV"),
+										("REDES INALAMBRICAS"),
+										("REDES NEURONALES"),
+										("LOGICA DIFUSA"),
+										("SISTEMAS DE INFORMACION GEOGRAFICA"),
+										("PROGRAMACION DE DISPOSITIVOS MOVILES"),
+										("NORMATIVIDAD EN TELECOMUNICACIONES E INFORMATICA");
+
+insert into Academia(Academia) values ("TELE");
+insert into Academia(Academia) values ("MEC");
+insert into Academia(Academia) values ("BIO");
+insert into Academia(Academia) values ("ISISA");
+insert into Academia(Academia) values ("ADMIN");
+insert into Academia(Academia) values ("HUM");
+insert into Academia(Academia) values ("INGLES");
+insert into Academia(Academia) values ("CYD");
+insert into Academia(Academia) values ("QB");
+insert into Academia(Academia) values ("CB");
+insert into Academia(Academia) values ("ELEC");
+insert into Academia(Academia) values ("INF");
+insert into Academia(Academia) values ("ME");
+insert into Academia(Academia) values ("SIST");
+
+/*insert into Alumnos values ("2015040820","12345","Nadia","Lopez","Tirado", 1 , 9,2,"1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com");
+ insert into Alumnos values (2015040720,"12345","Nadia","Lopez","Tirado", 1 , 6,"Mujer","1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com"); comprobar checks de esta tabla */ 
+insert into Alumnos values (2015030721,"12345","Nadia","Lopez","Tirado", 1 , 4 ,2,"1999-05-18","58302940","5523258868", "nadia18_lopez@hotmail,com","Baquetbol",7);
+insert into Alumnos values (2015170720,"123","Mauricio","Sanchez","Moreno", 1 , 4 ,1,"1999-09-19","55555555","5585963625", "mauricio@hotmail,com","Campismo",7);
+insert into Alumnos values (2015080720,"12","Ricardo","Flores","Lima", 1 , 4 ,1,"1999-01-13","58888888","5556465544", "ricardo@hotmail,com","Cilcismo",6);
+insert into Alumnos values (0908907876,"12345","Maria","Hernandez","Perez", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "maria_lopez@hotmail,com","Natacion",7);
+/*insert into Alumnos values ("2015020709","12340","ARTURO","LANDA","ESPINOSA", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "maria_lopez@hotmail,com","NATACION Y BASKET","SI");
+*/
+/*insert into Profesores values ("2589654510","123456","Marcela","Hernandez","Perez", 1 , "Mañana","12345678"); comprobar check*/
+insert into Profesores values ("2589654510","123456","Marcela","Hernandez","Perez", 2,1 , 1 ,"12345678",1);
+insert into Profesores values ("2576767687","1234","Hugo","Gonzalez","Casas", 1,1 , 2,"123456789",1);
+insert into Profesores values ("2345567890","12348","Martha","Hernandez","Hernandez", 2,1 , 3,"123456781",1);
+
+         
+         
+ /*Poner dos botones, tienes adeudos  sí y no, si es sí que mande un formulario para seleccionar materia una por una*/
+/*INSERT into Adeudos(NoBoleta) values("2015030721");*/
+/*INSERT into Adeudos(NoBoleta) values("2015030721");*/
 
 
+/*select*from sexoAP;
+drop view Tutorados;*/
+create  view Tutorados as 
+SELECT
+	alumnoprofesor.NoEmpleado,
+    alumnos.Nombre as "Nombre",
+    alumnos.CorreoElectronico as "CorreoElectronico",
+    alumnos.Semestre as "semestre",
+    alumnoprofesor.NoBoleta as "Boleta" from alumnos 
+    inner join alumnoprofesor on alumnos.NoBoleta = alumnoprofesor.NoBoleta;
+    /*update alumnoprofesorV set Status=2 where NoEmpleado='' 
+    and NoBoleta='';
+    select * from Tutorados;
+	select * from alumnos;
+	select * from alumnoprofesorv;
+	select * from alumnoprofesor;
+	select * from estados;
+    select * from PROFESORES
+    */
+/*ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'upiita2020';*/
 
 
+create view View_Adeudos_Alumnos as 
+    select 
+    AdeudosMaterias.idMateria,
+    Materias.Materia,
+    Alumnos.NoBoleta
+	from AdeudosMaterias
+				  inner Join Materias
+						on  Materias.IdMateria=AdeudosMaterias.IdMateria
+				  inner Join AdeudosAlumno
+						on AdeudosMaterias.IdAdeudo=AdeudosAlumno.IdAdeudo
+				  inner Join Alumnos
+						on Alumnos.NoBoleta=AdeudosAlumno.NoBoleta;
+				
+        
+drop view if exists View_Alumno_Tutor;         
+create view View_Alumno_Tutor as 
+    select 
+    Profesores.NombreP as Nombre,
+    Profesores.APaternoP,
+    Profesores.AMaternoP,
+    Estados.Estado,
+    Alumnos.NoBoleta
+	from AlumnoProfesor
+				  inner Join Profesores
+						on  Profesores.NoEmpleado=AlumnoProfesor.NoEmpleado
+				  inner Join Estados
+						on Estados.IdEstado=AlumnoProfesor.IdEstado
+				  inner join Alumnos
+						on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta;
+select * from View_Alumno_Tutor;
+
+select * from Estados;
