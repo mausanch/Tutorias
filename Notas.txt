@@ -9,23 +9,26 @@ Recibir cambios
 git pull origin master 
 
 
-Sintaxis Para nombres 
-
-
-NombreDeAcción_NombreDeAtributo_NombrePropietario_PluralOSingular
+Sintaxis Para nombres= NombreDeAcción_NombreDeAtributo_NombrePropietario_PluralOSingular
+Donde los atributos son:
 
 Nombre De Acción= View,Insert,Delete,Etc
 
 Nombre De Atributo= Adeudos, Historial, Tutores, Etc
 
-Nombre de Propietario= Alumno, Administrador, Tutores
+Nombre de la entidad= Alumno, Administrador, Tutor (Quién ejecuta)
 
 Plural o Singular= Si es Alumno o Alumnos....
 
 
+<<<<<<< HEAD
 Puntos faltantes;
 
 -Procedimientos para aceptar tutor
 -triggers 
 -Motivo de rechazo en solicitudes por parte del profesor
 -Cambios de profesores
+=======
+Pd. Ninguno de los atributos deben separarse
+pd2. Si se agrega información adicional, ejemplo TutoradosBySoliciud, agregar el By para identificar la separación
+>>>>>>> 3dce6bb46d3a1b2a2b63fa206158829e8d9b41a9
