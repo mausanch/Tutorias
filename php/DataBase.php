@@ -26,6 +26,38 @@ class DataBase{
         $result->execute();  //Ejecuto la consulta
         return ["Acuses_General"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
+
+    public static function View_Opciones_General ($mysqli){
+        $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        
+        $query="SELECT * FROM Genero";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        $OpcionesByGenero=$result->fetchAll(PDO::FETCH_ASSOC);
+
+        $query="SELECT * FROM Carreras";//Introduzco la consulta
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        $OpcionesCarreras=$result->fetchAll(PDO::FETCH_ASSOC);
+
+        $query="SELECT * FROM View_OpcionesByEstadoAdeudo_General";
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        $OpcionesByEstadoAdeudo=$result->fetchAll(PDO::FETCH_ASSOC);
+
+        $query="SELECT * FROM View_OpcionesBySituacionAcademica_General";
+        $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
+        $result->execute();  //Ejecuto la consulta
+        $OpcionesBySituacionAcademica=$result->fetchAll(PDO::FETCH_ASSOC);
+
+
+        return ["OpcionesByGenero"=>$OpcionesByGenero,
+                "OpcionesCarreras"=>$OpcionesCarreras,
+                "OpcionesByEstadoAdeudo"=>$OpcionesByEstadoAdeudo,
+                "OpcionesBySituacionAcademica"=>$OpcionesBySituacionAcademica];//Retorno la matriz en el formato
+    }
+    
+    
 /*--------------------------------------------------Alumno-------------------------------------------------*/
    
     public static function View_DatosByPersonales_Alumno($mysqli){
@@ -273,10 +305,12 @@ class DataBase{
 
 /*----------------------------------------------Modificaciones------------------------------------------------ */
 
-public static function Modificar_Alumno ($mysqli,$id, $Nombre, $Apellido_Paterno, $Apellido_Materno, $Fecha_Nacimiento, $Ciudad, $Pais, $Oficio, $Contacto_Telefono, $Nivel_Educativo, $Situacion_Familiar, $Causa_Migracion,$llave){
+public static function Update_DatosByPersonales_Alumno ($mysqli,$id,$Nombre, $Apellido_Paterno, $Apellido_Materno, 
+                                                        $Genero,$Fecha_Nacimiento, $Hobby)
+                                                        {
 
-    $Estado_Por_Defecto= 1;
-    $Tabla='Alumno';
+
+    $Tabla='Alumnos';
     try {
         //$Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
         if(!isset(DataBase::$Conexion_Alt)){
@@ -290,29 +324,47 @@ public static function Modificar_Alumno ($mysqli,$id, $Nombre, $Apellido_Paterno
         UPDATE ".$Tabla."
         SET 
         Nombre='".$Nombre."', 
-        Apellido_Paterno='".$Apellido_Paterno."', 
-        Apellido_Materno='".$Apellido_Materno."', 
-        Ciudad='".$Ciudad."',
-        Id_Pais='".$Pais."', 
-        Oficio='".$Oficio."', 
-        Fecha_Nacimiento='".$Fecha_Nacimiento."', 
-         
-        Telefono_Contacto='".$Contacto_Telefono."',
-        Id_Nivel='".$Nivel_Educativo."',
-        Id_Famlia='".$Situacion_Familiar."',
-        
-        Id_Causa='".$Causa_Migracion."',
-        Id_Estado='".$Estado_Por_Defecto."'
-        WHERE Id_Migrante=".$id.";";
+        Paterno='".$Apellido_Paterno."', 
+        Materno='".$Apellido_Materno."', 
+        Genero='".$Ciudad."',
+        FechaNacimiento='".$Pais."', 
+        Hobby='".$Oficio."' 
+        WHERE NoBoleta=".$id.";";
         $Funcionario = $Conexion->prepare($query); 
         $Funcionario->execute();  //Ejecuto la consulta
         return ["PUT"=>"Correcto, Modificado correctamente"];
      }catch(PDOException $e){
          return ["PUT"=>$e->getMessage()];
      }
-
 }
 
+public static function Update_DatosByAcademicos_Alumno ($mysqli,$id,$Carrera, $Semestre, $Situacion_Academica)
+                                                        {
+
+    $Tabla='Alumnos';
+    try {
+        //$Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
+        if(!isset(DataBase::$Conexion_Alt)){
+            DataBase::$Conexion_Alt=DataBase::Conectar();
+        }else{
+            $Conexion=DataBase::$Conexion_Alt;
+        }
+
+        $Conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $query="
+        UPDATE ".$Tabla."
+        SET 
+        IdCarrera='".$Nombre."', 
+        Semestre='".$Apellido_Paterno."', 
+        IdEstado='".$Apellido_Materno."'
+        WHERE NoBoleta=".$id.";";
+        $Funcionario = $Conexion->prepare($query); 
+        $Funcionario->execute();  //Ejecuto la consulta
+        return ["PUT"=>"Correcto, Modificado correctamente"];
+     }catch(PDOException $e){
+         return ["PUT"=>$e->getMessage()];
+     }
+}
 /*--------------------------------------------------Borrado de registros----------------------------------------*/
 
 public static function Eliminar_Alumno($mysqli,$id){
@@ -320,7 +372,7 @@ public static function Eliminar_Alumno($mysqli,$id){
     try {
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
         $Conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $query="DELETE FROM migrante WHERE Id_Migrante = '".$id."';";
+        $query="DELETE FROM Alumnos WHERE NoBoleta = '".$id."';";
         $Funcionario = $Conexion->prepare($query); 
         $Funcionario->execute();  //Ejecuto la consulta
         return ["DELETE"=>"Correcto, Eliminado correctamente"];
@@ -334,15 +386,6 @@ public static function Eliminar_Alumno($mysqli,$id){
     public static function IniciarSesion ($mysqli,$User, $Pass){
         
         try{
-            if (empty($User) || empty ($Pass)){
-            
-                echo '
-                        <script type="text/javascript">	
-                        alert("Por favor llene ambos campos");
-                        window.history.back();
-                        </script>';
-            }   
-            else {
                 $Conexion = $mysqli ->Conectar();
                 $query="SELECT Id_Funcionario, Nombre,Apellido_Paterno,Apellido_Materno,Correo_Electronico,Contrasenia,Id_Punto_Control FROM Funcionario where Correo_Electronico='".$User."'";//Introduzco la consulta
                 $result  = $Conexion->prepare($query); //
@@ -395,7 +438,7 @@ public static function Eliminar_Alumno($mysqli,$id){
                     
                 }
 
-            }
+            
         }catch(Exception $e){
             $result=["Error: "=>$e->getMessage()];
         }

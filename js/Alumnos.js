@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     
     Alumnos_consultar('#t_Alumnos', true)
     .then(datatable=>{
-        new $.fn.dataTable.Buttons(datatable, { 
+        new $.fn.dataTable.Buttons(datatable, {     
             buttons: 
                 [
                     {

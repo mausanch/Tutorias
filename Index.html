@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--Mejora el escalamiento en móviles-->
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+        <form id="f_Alumno">      
+                    <div class="form-group">
+                        <label for="Nombres" class="Texto">Nombre(s):</label>                           
+                        <input type = "text" name="Nombre"  required id="Nombre" maxlength="30" class="InputRegistro" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="Apellido_Paterno" class="Texto">Apellido Paterno:</label>   
+                        <input type="text" name="Apellido_Paterno" maxlength="30" class = "InputRegistro" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="Apellido_Materno" class="Texto">Apellido Materno:</label>   
+                        <input type="text" name="Apellido_Materno" maxlength="30" class = "InputRegistro" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="Genero" class="Texto">Genero:</label>   
+                        <input list="Genero" name="Genero" class = "InputRegistro" autocomplete="off">				
+                   </div>
+                   <div class="form-group">
+                    <label for="Nacimiento" class="Texto">Fecha de nacimiento: </label>   
+                        <input type="date" id="Fecha_Nacimiento" name="Fecha_Nacimiento" class = "InputRegistro" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Boleta" class="Texto"> Número de Boleta:</label>   
+                        <input type="text" id="Boleta" name="Boleta" maxlength="10" class = "InputRegistro" autocomplete="off" required>	
+                    </div>
+                    <div class="form-group">
+                        <label for="Carrera" class="Texto"> Carrera:</label>   
+                        <input list="Carrera" name="Carrera" class = "InputRegistro" autocomplete="off">				
+                    </div>                                
+                    <div class="form-group">
+                        <label for="Semestre" class="Texto">Semestre:</label>   
+                        <input type="number" id="Semestre" name="Semestre" maxlength="20" autocomplete="off" class = "InputRegistro" min="1" max="18" required>					
+                    </div>
+                    <div class="form-group">
+                        <label for="Situacion_Academica" class="Texto">Situación escolar :</label>   
+                        <input list="EstadoA" name="EstadoA" class = "InputRegistro" autocomplete="off" >				
+                    </div>                     
+                    <div class="form-group">
+                        <label for="Telefono_Fijo" class="Texto">Teléfono Fijo:</label>   
+                        <input type="text" id="Telefono_Fijo"  name="Telefono_Fijo" maxlength="10" class = "InputRegistro" autocomplete="off" required>				
+                    </div>   
+                    <div class="form-group">
+                        <label for="Telefono_Celular" class="Texto">Celular:</label>   
+                        <input type="text"  id="Telefono_Celular" name="Telefono_Celular" maxlength="10" class = "InputRegistro" autocomplete="off" required>
+                    </div>   
+                    <div class="form-group">
+                        <label for="Correo_Electronico" class="Texto">Correo electronico:</label>   
+                        <input type="email" id="Email"  name="Email" maxlength="30" class = "InputRegistro" autocomplete="off" required>
+                    </div>   
+                    <div class="form-group">
+                        <label for="Pasatiempo" class="Texto">Pasatiempo:</label>   
+                        <input type="text"  id="Hobby" name="Hobby" maxlength="300"class = "InputRegistro" autocomplete="off" required>
+                    </div>   
+
+                    <div class="form-group">
+                        <label for="Contrasenia" class="Texto">Contraseña:</label>   
+                        <input type="password" id="Password" name ="Password" minlength="8" maxlength="30" class = "InputRegistro" autocomplete="off" required>
+                    </div>  
+                                                                   
+            <input type="submit" id="f_Alumno_submit" class="btn btn-primary" form="f_Alumno" value="Registrar">
+          </form>
+       
+
+                <!--Ejemplo de MODAL-->
+                <div class="modal fade" id="modal_Nombre_Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content mau-modal-color">
+                            <div class="modal-body mx-3">
+                                    <div class="modal-dialog text-center">
+                                        <div class="col-sm-8 main-section" >
+                                            <div class="modal-content mau-modal-color">
+                                                
+                                                <!--Contenido del Modal-->
+
+                                            </div>
+                                        </div> 
+                                    </div>
+        
+        
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+       
+        
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> <!--Datatables-->
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script> <!--Datatables Bootstrap 4-->
+        <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script> <!--Datatables Select-->
+        <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script> <!--Datatables Buttons-->
+
+        <script type="module" src="js/Alumnos.js"></script>
+
+    </body>
+</html>
