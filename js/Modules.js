@@ -138,7 +138,7 @@ export function datatable_consultar_todos(uri, rowsindex, table, init, columns){
 
 
 
-function table_registrar(uri, jsonData){
+export function table_registrar(uri, jsonData){
     return new Promise((resolve, reject)=>{
         table_simple_fetch(uri, {method: 'POST', body: jsonData})
         .then(result => resolve(result))
