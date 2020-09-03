@@ -1,3 +1,6 @@
+//Mensajes 
+let Message_PeticionSelector_Todos=100;
+
 
 //FUNCIONES GENERALES//
 
@@ -161,6 +164,30 @@ function table_eliminar(uri){
         .catch(result=>reject(result));
     })
 }
+
+export function llenar_opciones_selector(selectors_ids){
+    let ids;
+    for(ids of selectors_ids){
+        let selector = document.getElementById(ids);
+        fetch('php/res_General.php/'+Message_PeticionSelector_Todos, {
+            method: 'GET'
+        })
+        .then(res=>res.json())
+        .then(res_json=>{
+            console.log(res_json);
+            resolve(res_json);
+        })
+        .then(resjson=>{
+            Object.entries(resjson).forEach(([ind, value])=>{
+                let option = document.createElement('option');
+                option.setAttribute("value",value[Object.keys(value)[0]]); //Se refiere al id
+                option.innerHTML=value[Object.keys(value)[1]]; //Se refiere al texto que aparece en la opción.
+                selector.appendChild(option); //Agrega las opciones al selector
+            })  
+        })      
+    }   
+}
+
 
 //ALUMNOS
 

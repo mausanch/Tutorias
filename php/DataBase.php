@@ -51,10 +51,11 @@ class DataBase{
         $OpcionesBySituacionAcademica=$result->fetchAll(PDO::FETCH_ASSOC);
 
 
-        return ["OpcionesByGenero"=>$OpcionesByGenero,
-                "OpcionesCarreras"=>$OpcionesCarreras,
-                "OpcionesByEstadoAdeudo"=>$OpcionesByEstadoAdeudo,
-                "OpcionesBySituacionAcademica"=>$OpcionesBySituacionAcademica];//Retorno la matriz en el formato
+        return ["Genero"=>$OpcionesByGenero,
+                "Carrera"=>$OpcionesCarreras,
+                "EstadoAdeudo"=>$OpcionesByEstadoAdeudo,
+                "SituacionAcademica"=>$OpcionesBySituacionAcademica
+            ];//Retorno la matriz en el formato
     }
     
     

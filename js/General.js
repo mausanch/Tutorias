@@ -1,5 +1,5 @@
 
-import {table_registrar} 
+import {table_registrar,llenar_opciones_selector} 
 from './modules.js';
 //Definimos los elementos del DOM
 /*-------------------------------------------Forms------------------------------------------*/
@@ -10,6 +10,13 @@ const form_Alumno_action = document.getElementById('f_Alumno_action');
 document.addEventListener("DOMContentLoaded", function(event) {
 
     console.log("Pagina Cargada");
+    llenar_opciones_selector(            [
+        'Genero',
+        'Carrera',
+        'Adeudos',
+        'SituacionAcademica'
+    ])
+
 
 });
 
