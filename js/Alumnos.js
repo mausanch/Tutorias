@@ -91,21 +91,15 @@ function View_Informacion_Alummno(){
     .then(resjson=>{
         console.log("Valores Recibidos");
         console.log(resjson);
-        //var DataJson= resjson.parse();
-
-        document.getElementById('Nombre').value="sad";
-        document.getElementById('Apellido_Paterno').value = "asd";
-        document.getElementById('Genero').value = resjson.Genero;
-        document.getElementById('Fecha_Nacimiento').value = resjson.Genero;
-        document.getElementById('Hobby').value = resjson.Genero;
+        document.getElementById('Nombre').value=resjson.DatosPersonales[0].Boleta;
+        document.getElementById('Apellido_Paterno').value = resjson.DatosPersonales[0].Boleta;
+        document.getElementById('Apellido_Materno').value = resjson.DatosPersonales[0].Boleta;
+        document.getElementById('Genero').value = resjson.DatosPersonales[0].Genero;
+        document.getElementById('Fecha_Nacimiento').value = resjson.DatosPersonales[0].Boleta;
+        document.getElementById('Hobby').value = resjson.DatosPersonales[0].Hobbie;
     })
     .catch(e=>{
         console.log("Error");
-        document.getElementById('Nombre').innerHTML ="null";
-        document.getElementById('Apellido_Paterno').innerHTML = "null";
-        document.getElementById('Genero').innerHTML ="null";
-        document.getElementById('Fecha_Nacimiento').innerHTML = "null";
-        document.getElementById('Hobby').innerHTML = "null";
     }) 
 
 }
