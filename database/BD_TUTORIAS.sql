@@ -7,8 +7,8 @@ use ProyectoTutoriasFinal;
 		Carrera varchar (35) not null ,
 		primary key (IdCarrera)
 		);
-
-		create table Materias(
+		
+        create table Materias(
 		IdMateria int AUTO_INCREMENT  not null,
 		Materia varchar(50) not null,
 		primary key(IdMateria)
@@ -38,11 +38,11 @@ use ProyectoTutoriasFinal;
         primary key (IdTurno)
         );
         
-         DROP TABLE IF EXISTS  Profesores;           
+		DROP TABLE IF EXISTS  Profesores;           
 		create table Profesores(
-				NoEmpleado bigint(10) not null,
-				Contrasenia varchar(100) not null, 
-				Nombre varchar(30)not null,
+		       NoEmpleado bigint(10) not null,
+			   Contrasenia varchar(100) not null, 
+			   Nombre varchar(30)not null,
 				Paterno varchar(20)not null ,
 				Materno varchar(30)not null ,
                 IdGenero int not null ,
@@ -85,7 +85,7 @@ use ProyectoTutoriasFinal;
 			IdAlumnoProfesor int not null auto_increment,
 			NoBoleta int(20) not null,
 			NoEmpleado bigint(20) not null,
-			IdEstado int not null check(IdEstado in(1,4,5,10,11,12)), /*4-Pendiente, 5-Sin asignar 10-Finalizado 11-Aceptado 12-Rechazado*/
+			IdEstado int not null check(IdEstado in(4,5,11,12)), /*4-Pendiente, 5-Sin asignar 11-Aceptado ,12-Rechazado*/
             FechaSolicitud date not null,
 			primary key(IdAlumnoProfesor),
 			foreign key(NoBoleta) references Alumnos(NoBoleta),
@@ -123,7 +123,7 @@ insert into Estados(Estado) values ("Activo"),/*Profesor en labores y  relacion 
 								   ("Suspendido"),/*Profesor en sabatico  Alumno suspendido*/
 								   ("Inactivo"),/*Alumno dado de baja o Profesor fuera del instituto*/  
 								   ("Pendiente"),/*Solicitud de Tutorado*/
-								   ("Sin Asignar"),/*Ha alcanzado el maximo de Tutores*/                                 
+								   ("Sin Asignar"),/*Ha alcanzado el maximo de Tutores(solicitud)*/                                 
 								   ("Regular"),/*Situacion academica del alumno*/
 								   ("Iregular"),/*Situacion academica del alumno*/
 								   ("Reprobada"),/*Status de la materia*/
@@ -221,20 +221,27 @@ insert into Alumnos values (2015170720,"123","Mauricio","Sanchez","Moreno", 1 , 
 insert into Alumnos values (2015080720,"12","Ricardo","Flores","Lima", 1 , 4 ,1,"1999-01-13","58888888","5556465544", "ricardo@hotmail.com","Cilcismo",6);
 insert into Alumnos values ("2015020709","12340","ARTURO","LANDA","ESPINOSA", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "arturolandae@hotmail.com","NATACION Y BASKET",7);
 
-insert into AlumnoProfesor values (1,2015030721,2589654510,1,"2020-08-18");
-insert into AlumnoProfesor values (2,2015170720,2589654510,4,"2020-08-17");
-insert into AlumnoProfesor values (3,2015080720,2576767687,1,"2020-08-18");
-insert into AlumnoProfesor values (4,2015020709,2576767687,4,"2020-08-20");
-
 insert into AdeudosMateriasAlumno values (1, 2015030721, 4, 8);
 insert into AdeudosMateriasAlumno values (2, 2015030721, 11, 9);
 insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
 
+/*Pruebas de solicitud*/
+insert into AlumnoProfesor values (1,2015030721,2589654510,11,"2019-06-18");
+insert into AlumnoProfesor values (5,2015030721,2576767687,11,"2019-12-18");
+insert into AlumnoProfesor values (6,2015030721,2345567890,4,"2020-01-01");
 
-     
+insert into AlumnoProfesor values (2,2015170720,2589654510,4,"2020-08-17");
+insert into AlumnoProfesor values (3,2015080720,2576767687,11,"2020-08-18");
+insert into AlumnoProfesor values (4,2015020709,2576767687,4,"2020-08-20");
+
+insert into Historial values (1,1,"2019-06-20","2019-12-20",10); /*Crear trigger para historial cuando la solicitud es aceptada y la relacion esta activa, la fecha de termino aparezca "sin fecha de termino"*/
+insert into Historial values (2,5,"2019-12-20",null ,1);
+
 /*Nuevas vistas*/
+/**************************************GENERAL****************************************************/
 
-    /*ALUMNOS*/
+
+/******************************************ALUMNOS************************************************/
         
     drop view if exists View_DatosByPersonales_Alumno;
     /*Consulta Alumno datos personales*/
@@ -246,12 +253,12 @@ insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
             Genero.Genero as Genero,
 			Alumnos.FechaNacimiento as "Fecha de nacimiento" ,
             Alumnos.Hobby as Hobbie
-            from Alumnos
+	   from Alumnos
             inner join Genero 
                     on Alumnos.IdGenero=Genero.IdGenero;
            
-        select*from View_DatosByPersonales_Alumno;
-   /* select*from View_DatosByPersonales_Alumno where Boleta=2015030721;*/
+	select*from View_DatosByPersonales_Alumno;
+	/* select*from View_DatosByPersonales_Alumno where Boleta=2015030721;*/
             
             
 	drop view if exists View_DatosByAcademicos_Alumno;
@@ -261,31 +268,15 @@ insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
 		   Carreras.Carrera as Carrera,
 		   Alumnos.Semestre as Semestre,
            Estados.Estado as "Situación escolar"
-	from Alumnos
+	 from  Alumnos
             inner join Carreras
                     on Carreras.IdCarrera=Alumnos.IdCarrera
 			inner join Estados
                     on Estados.IdEstado=Alumnos.IdEstado;
                     
-      select*from View_DatosByAcademicos_Alumno;     
+	select*from View_DatosByAcademicos_Alumno;     
 	/*select*from View_DatosByAcademicos_Alumno where Boleta=2015030721;*/
-      
-      
-	drop view if exists View_DatosByAcedemicos_Alumno_Adeudos;
-    /*Consulta Alumno datos de contacto*/
-    create view View_DatosByAcedemicos_Alumno_Adeudos as
-    select AdeudosMateriasAlumno.NoBoleta as Boleta, 
-		   Materias.IdMateria as "Identificador de materia",
-           Materias.Materia as Materia,
-           Estados.Estado as Estado
-      from AdeudosMateriasAlumno
-              inner join Materias
-                      on AdeudosMateriasAlumno.IdMateria=Materias.IdMateria
-              inner join Estados
-                      on AdeudosMateriasAlumno.IdEstado=Estados.IdEstado;
-           
-           select*from View_DatosByAcedemicos_Alumno_Adeudos;
-           /*select*from View_DatosByAcedemicos_Alumno_Adeudos where Boleta=2015030721;*/
+ 
            
 	drop view if exists View_DatosByContactos_Alumno;
     /*Consulta Alumno datos de contacto*/
@@ -296,39 +287,76 @@ insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
            Alumnos.CorreoElectronico as "Correo electrónico"
       from Alumnos;
            
-           select*from View_DatosByContactos_Alumno;
-           /*select*from View_DatosByContactos_Alumno where Boleta=2015030721;*/
-              
-   drop view if exists View_Tutor_Alumno_Tutores;
-    /*Consulta Alumno datos de contacto*/
-    create view View_Tutor_Alumno_Tutores as
+	select*from View_DatosByContactos_Alumno;
+	/*select*from View_DatosByContactos_Alumno where Boleta=2015030721;*/
+               
+      
+	drop view if exists View_Adeudos_Alumno;
+    /*Consulta Alumno su historial de adeudos*/
+    create view View_Adeudos_Alumno as
+    select AdeudosMateriasAlumno.NoBoleta as Boleta, 
+		   Materias.IdMateria as "Identificador de materia",
+           Materias.Materia as Materia,
+           Estados.Estado as Estado
+      from AdeudosMateriasAlumno
+              inner join Materias
+                      on AdeudosMateriasAlumno.IdMateria=Materias.IdMateria
+              inner join Estados
+                      on AdeudosMateriasAlumno.IdEstado=Estados.IdEstado;
+           
+	select*from View_Adeudos_Alumno;
+	/*select*from View_Adeudos_Alumno where Boleta=2015030721;*/
+			   
+           
+   drop view if exists View_TutorActual_Alumno;
+    /*Consulta Alumno su tutor actual*/
+    create view View_TutorActual_Alumno as
     select AlumnoProfesor.NoBoleta as Boleta, 
            Profesores.Nombre as "Nombre (s)",
            Profesores.Paterno as "Apellido Paterno",
            Profesores.Materno as "Apellido Materno",
            Profesores.CorreoElectronico as "Correo electrónico",
-           Turnos.Turno as "Turno"
+           Turnos.Turno as "Turno" /*Aqui se tendrá que modificar a poder consultar su horario que el mismo profe subirá*/
       from AlumnoProfesor
               inner join Profesores
 					  on Profesores.NoEmpleado=AlumnoProfesor.NoEmpleado
 			  inner join Turnos
 			           on Turnos.IdTurno=Profesores.IdTurno;
            
-           select*from View_Tutor_Alumno_Tutores;
-           /*select*from View_Tutor_Alumno_Tutores where Boleta=2015030721;*/           
+           select*from View_TutorActual_Alumno;
+           /*select*from View_TutorActual_Alumno where Boleta=2015030721;*/           
               
-           
-    /*PROFESOR*/
+	drop view if exists View_Historial_Alumno;
+    /*Consulta Alumno su historial de profesores*/
+    create view View_Historial_Alumno as
+    select AlumnoProfesor.NoBoleta,
+           Profesores.Nombre as "Nombre(s)",
+		   Profesores.Paterno as "Apellido Paterno",
+           Profesores.Materno as "Apellido Materno",
+           Historial.FechaInicio as "Fecha de Inicio",
+           Historial.FechaTermino as "Fecha de Término",
+           Estados.Estado as "Estado"
+           from Historial 
+           inner join AlumnoProfesor
+                   on Historial.IdAlumnoProfesor=AlumnoProfesor.IdAlumnoProfesor
+           inner join Estados
+				   on Historial.IdEstado=Estados.IdEstado
+           inner join Profesores
+                   on Profesores.NoEmpleado=AlumnoProfesor.NoEmpleado;
     
-        drop view if exists View_Alumno_Profesor_Alumnos;
+    select * from View_Historial_Alumno;   
+    
+/*************************************PROFESOR****************************************/
+    
+        drop view if exists View_Tutorados_Profesor;
         /*Esta vista es para iniciar sesion como profesor y ver todos sus alumnos (estado y solicitudes)*/
-	    create view View_Alumno_Profesor_Alumnos as 
+	    create view View_Tutorados_Profesor as 
         select Profesores.NoEmpleado,
-               Alumnos.NoBoleta,
-               Alumnos.Nombre,
-               Alumnos.Paterno,
-               Alumnos.Materno,
-               Estados.Estado
+               Alumnos.NoBoleta "Número de boleta",
+               Alumnos.Nombre as "Nombre(s)",
+               Alumnos.Paterno as "Apellido Paterno",
+               Alumnos.Materno as "Apellido Materno",
+               Estados.Estado as "Estado"
 			from   AlumnoProfesor
 				   inner Join Estados
 						   on Estados.IdEstado=AlumnoProfesor.IdEstado
@@ -336,12 +364,59 @@ insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
 						   on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta
 				   inner join Profesores
 						   on AlumnoProfesor.NoEmpleado=Profesores.NoEmpleado;
-                          
-        select * from View_Alumno_Profesor_Alumnos ; 
+         
+        select * from View_Tutorados_Profesor ;
+       /* select * from View_Tutorados_Profesor where NoEmpleado=2576767687  */
+       
+        drop view if exists View_Solicitudes_Profesor;
+        /*Esta vista es para iniciar sesion como profesor y ver todos sus alumnos (estado y solicitudes)*/
+	    create view View_Solicitudes_Profesor as 
+        select Profesores.NoEmpleado,
+               Alumnos.NoBoleta "Número de boleta",
+               Alumnos.Nombre as "Nombre(s)",
+               Alumnos.Paterno as "Apellido Paterno",
+               Alumnos.Materno as "Apellido Materno",
+               Estados.Estado as "Estado"
+			from   AlumnoProfesor
+				   inner Join Estados
+						   on Estados.IdEstado=AlumnoProfesor.IdEstado
+				   inner join Alumnos
+						   on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta
+				   inner join Profesores
+						   on AlumnoProfesor.NoEmpleado=Profesores.NoEmpleado
+				   where AlumnoProfesor.IdEstado=4;
+         
+        select * from View_Solicitudes_Profesor ;
+       /* select * from View_Solicitudes_Profesor where NoEmpleado=2576767687 */
         
-        
-        
-        
+	 drop view if exists View_TutoradosByDetalle_Profesor;
+     create view View_TutoradosByDetalle_Profesor as 
+     select  Alumnos.NoBoleta as Boleta, 
+             Alumnos.Nombre as "Nombres(s)",
+             Alumnos.Paterno as "Apellido Paterno",
+             Alumnos.Materno as "Apellido Materno",
+             Carreras.Carrera as "Carrera",
+             Alumnos.Semestre as "Semestre",
+             Estados.Estado as "Situación Academica",
+             Alumnos.CorreoElectronico as "Correo Electrónico",
+             Materias.IdMateria as "Identificador de materia",
+			 Materias.Materia as Materia,
+			 Estados.Estado as Estado
+      from AdeudosMateriasAlumno
+              inner join Materias
+                      on AdeudosMateriasAlumno.IdMateria=Materias.IdMateria
+              inner join Estados
+                      on AdeudosMateriasAlumno.IdEstado=Estados.IdEstado
+              inner join Alumnos 
+					  on Alumnos.NoBoleta=AdeudosMateriasAlumno.NoBoleta
+              inner join Carreras 
+                      on Carreras.IdCarrera=Alumnos.IdCarrera;
+    
+    select * from View_TutoradosByDetalle_Profesor where 20150721;
+    
+    
+    
+    
     
     
     
