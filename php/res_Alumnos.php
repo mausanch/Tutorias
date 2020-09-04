@@ -8,17 +8,26 @@ $result = "";
 
 
 //MÉTODO HTTP GET
-function res_get(){
+function res_get($id){
     //USO: Pasar un único argumento entero id si se va a aplicar la acción a un elemento específico
     //Si no, no es necesario pasar argumentos.
     $args=func_get_args();
     $conexion= new Database();
 
-    if (count($args)==1){
-
-    }else{
- 
- 
+    switch($id){
+        case 1: //Datos Personales
+                $result=$conexion->View_DatosByPersonales_Alumno($conexion);
+        break;
+        case 2://Datos Academicos
+                $result=$conexion->View_DatosByPersonales_Alumno($conexion);
+        break;
+        case 3://Datos Contacto
+                $result=$conexion->View_DatosByPersonales_Alumno($conexion);
+        break;
+        default:
+                header('HTTP/1.1 405 Method not allowed');
+                header('Allow: GET, POST, PUT, DELETE');
+        break;
     }
           
 
@@ -88,7 +97,7 @@ session_start();/*Continuamos la sesión*/
 //CÓDIGO EJECUTADO AL MOMENTO DE LLAMAR AL ARCHIVO PHP
 $uri=explode("/",$uri);
 $uri=array_slice($uri,3); //Elimina las primeras tres partes irrelevantes de la uri (""/"projectfolder"/"php")
-if($uri[0] == 'res_alumnos.php'){
+if($uri[0] == 'res_Alumnos.php'){
     if($uri=array_slice($uri,1)){ //Si después de eliminar el primer elemento ("res_alumnos.php"), el array no está vacío, entonces
         if($uri[0]==""){ //Si no se especificó un id pero si se puso un slash al final de la uri ("...nos.php/")
             header('HTTP/1.1 400 Bad Request');
@@ -103,7 +112,7 @@ if($uri[0] == 'res_alumnos.php'){
     
     switch($method){
         case 'GET':
-                $id_specified ? ($result=res_get($id)) : ($result=res_get());
+                $id_specified ? ($result=res_get($id)) : ($result=res_get($id));
         break;
         case 'POST':
                 $id_specified ? header('HTTP/1.1 400 Bad Request') : ($result = res_post());

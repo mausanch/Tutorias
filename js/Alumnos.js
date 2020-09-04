@@ -1,6 +1,6 @@
 //import {Modulos correspondientes}
 
-import {datatable_consultar_todos,Validar_Sesion,Cerrar_Sesion} from './Modules.js';
+import {datatable_consultar_todos} from './Modules.js';
 
 /*------------------------------------------------Tablas------------------------------------------------------*/
 
@@ -18,7 +18,7 @@ let id;
 document.addEventListener("DOMContentLoaded", function(event) {
 
     View_Informacion_Alummno()
-    
+
     
    /* Alumnos_consultar('#t_Alumnos', true)
     .then(datatable=>{
@@ -84,27 +84,32 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
 function View_Informacion_Alummno(){
-    fetch('php/res_Alumnos.php/'+1, {
+    fetch('../../php/res_Alumnos.php/'+1, {
         method: 'GET'
     })
     .then(res=>res.json())
-    .then(res_json=>{
-        console.log(res_json);
-        resolve(res_json);
-    })
     .then(resjson=>{
-        Object.entries(resjson).forEach(([ind, value])=>{
-            let option = document.createElement('option');
-            option.setAttribute("value",value[Object.keys(value)[0]]); //Se refiere al id
-            option.innerHTML=value[Object.keys(value)[1]]; //Se refiere al texto que aparece en la opción.
-            selector.appendChild(option); //Agrega las opciones al selector
-        })  
-    })  
+        console.log("Valores Recibidos");
+        console.log(resjson);
+        document.getElementById('Nombre').value= resjson;
+        document.getElementById('Apellido_Paterno').value = "asd";
+        document.getElementById('Genero').value = resjson.Genero;
+        document.getElementById('Fecha_Nacimiento').value = resjson.Genero;
+        document.getElementById('Hobby').value = resjson.Genero;
+    })
+    .catch(e=>{
+        console.log("Error");
+        document.getElementById('Nombre').innerHTML ="null";
+        document.getElementById('Apellido_Paterno').innerHTML = "null";
+        document.getElementById('Genero').innerHTML ="null";
+        document.getElementById('Fecha_Nacimiento').innerHTML = "null";
+        document.getElementById('Hobby').innerHTML = "null";
+    }) 
 
 }
 
 
-form_Alumnos_registrar.onsubmit = function(e){
+form_Alumno_registrar.onsubmit = function(e){
     e.preventDefault();
     let formData = new FormData(form_laborales_registrar);
     let formJson = JSON.stringify(Object.fromEntries(formData));

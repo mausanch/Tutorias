@@ -4,7 +4,7 @@ class DataBase{
 /*-------------------------------------------------Conexión-------------------------------------------------*/
     public static function Conectar() {        
         define('Server', 'localhost');
-        define('DataBase', 'Tutorias');
+        define('DataBase', 'ProyectoTutoriasFinal');
         define('user', 'WebApplication');
         define('password', '123456');					        
         $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');			
@@ -62,44 +62,44 @@ class DataBase{
 /*--------------------------------------------------Alumno-------------------------------------------------*/
    
     public static function View_DatosByPersonales_Alumno($mysqli){
-    $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
-
+    //$Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+    $Boleta="2015030721";
     $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-    $query="SELECT * FROM View_DatosByPersonales_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+    $query="SELECT * FROM View_DatosByPersonales_Alumno where Boleta='".$Boleta."'";//Introduzco la consulta
     $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
     $result->execute();  //Ejecuto la consulta
-    return ["TutorActual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+    return ["DatosPersonales"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
 
     public static function View_DatosByAcademicos_Alumno($mysqli){
-        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
-    
+        //$Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+        $Boleta="2015030721";
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_DatosByPersonales_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+        $query="SELECT * FROM View_DatosByPersonales_Alumno where Boleta ='".$Boleta."'";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $result->execute();  //Ejecuto la consulta
-        return ["TutorActual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+        return ["DatosAcademicos"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
 
     public static function View_DatosByContacto_Alumno($mysqli){
-        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
-    
+        //$Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+        $Boleta="2015030721";
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_DatosByPersonales_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+        $query="SELECT * FROM View_DatosByPersonales_Alumno where Boleta ='".$Boleta."'";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $result->execute();  //Ejecuto la consulta
-        return ["TutorActual"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
+        return ["DatosContacto"=>$result->fetchAll(PDO::FETCH_ASSOC)];//Retorno la matriz en el formato
     }
 
     public static function View_Adeudos_Alumno($mysqli){
-        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
-
+        //$Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+        $Boleta="2015030721";
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
-        $query="SELECT * FROM View_Adeudos_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
+        $query="SELECT * FROM View_Adeudos_Alumno where Boleta='".$Boleta."'";//Introduzco la consulta
         $Adeudos = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $Adeudos->execute();  //Ejecuto la consulta
 
-        $query="SELECT IdEstado FROM Alumnos where NoBoleta='".$Boleta."' ";//Introduzco la consulta
+        $query="SELECT IdEstado FROM Alumnos where Boleta='".$Boleta."' ";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $result->fetchAll(PDO::FETCH_ASSOC);
         

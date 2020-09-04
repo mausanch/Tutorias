@@ -9,7 +9,6 @@ const form_Alumno_action = document.getElementById('f_Alumno_action');
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
-    console.log("Pagina Cargada");
     llenar_opciones_selector(            [
         'Genero',
         'Carrera',

@@ -14,7 +14,7 @@ function res_get(){
     $args=func_get_args();
     $conexion= new Database();
 
-    $result=$conexion->View_Tutorados_Administrador();
+    $result=$conexion->View_Tutorados_Administrador($conexion);
           
 
 return $result;
