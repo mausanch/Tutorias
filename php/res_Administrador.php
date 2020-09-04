@@ -14,12 +14,7 @@ function res_get(){
     $args=func_get_args();
     $conexion= new Database();
 
-    if (count($args)==1){
-
-    }else{
- 
- 
-    }
+    $result=$conexion->View_Tutorados_Administrador();
           
 
 return $result;

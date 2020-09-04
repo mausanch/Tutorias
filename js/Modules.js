@@ -1,5 +1,8 @@
 //Mensajes 
 let Message_PeticionSelector_Todos=100;
+let Message_PeticionPersonales_Alumno=1;
+let Message_PeticionAcademicos_Alumno=2;
+let Message_PeticionContacto_Alumno=3;
 
 
 //FUNCIONES GENERALES//

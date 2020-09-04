@@ -17,9 +17,10 @@ let id;
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
-    //Validar_Sesion()
+    View_Informacion_Alummno()
     
-    Alumnos_consultar('#t_Alumnos', true)
+    
+   /* Alumnos_consultar('#t_Alumnos', true)
     .then(datatable=>{
         new $.fn.dataTable.Buttons(datatable, {     
             buttons: 
@@ -75,25 +76,31 @@ document.addEventListener("DOMContentLoaded", function(event) {
         e=>{console.log(e);
         console.log ('Tabla sin datos');
         }
-        );
+        );*/
     //action requiere una definición de una función, y no una llamada a una función. Por ello se hace una estructura arrow function, es decir ()=>{}
 });
 
 
-function Alumnos_consultar(table, init){  //thead_alumnos, tbody_alumnos
-    return new Promise((resolve, reject)=>{
-        datatable_consultar_todos("php/res_Alumnos.php", "Alumnos", table, init, {
-            'ID' : "Id_Migrante",
-            'Nombre':'Nombre', 
-            'Apellido Paterno':'Apellido_Paterno', 
-            'Apellido Materno':'Apellido_Materno', 
-            'Pais':'Pais', 
-            'Punto de Control':'Punto_de_Control', 
-            'Estado':'Estado'
-        })
-        .then(datatable=>{resolve(datatable)})
-        .catch(e=>{reject(e)})
+
+
+function View_Informacion_Alummno(){
+    fetch('php/res_Alumnos.php/'+1, {
+        method: 'GET'
     })
+    .then(res=>res.json())
+    .then(res_json=>{
+        console.log(res_json);
+        resolve(res_json);
+    })
+    .then(resjson=>{
+        Object.entries(resjson).forEach(([ind, value])=>{
+            let option = document.createElement('option');
+            option.setAttribute("value",value[Object.keys(value)[0]]); //Se refiere al id
+            option.innerHTML=value[Object.keys(value)[1]]; //Se refiere al texto que aparece en la opción.
+            selector.appendChild(option); //Agrega las opciones al selector
+        })  
+    })  
+
 }
 
 
