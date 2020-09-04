@@ -91,7 +91,9 @@ function View_Informacion_Alummno(){
     .then(resjson=>{
         console.log("Valores Recibidos");
         console.log(resjson);
-        document.getElementById('Nombre').value= resjson;
+        //var DataJson= resjson.parse();
+
+        document.getElementById('Nombre').value="sad";
         document.getElementById('Apellido_Paterno').value = "asd";
         document.getElementById('Genero').value = resjson.Genero;
         document.getElementById('Fecha_Nacimiento').value = resjson.Genero;
