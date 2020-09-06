@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+
+        <title>Datos Academicos del Alumno</title>
         
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
@@ -14,37 +16,29 @@
     </head>
     <body>
 
-         <!--Ejemplo de TABLA-->
-        <thead id="thead_alumnos">
-        </thead>
-        <tbody id="tbody_alumnos">
-        </tbody>
-       
+        
+        <form id="Form_RegistrarAlumno_General">     
 
-                <!--Ejemplo de MODAL-->
-                <div class="modal fade" id="modal_Nombre_Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content mau-modal-color">
-                            <div class="modal-body mx-3">
-                                    <div class="modal-dialog text-center">
-                                        <div class="col-sm-8 main-section" >
-                                            <div class="modal-content mau-modal-color">
-                                                
-                                                <!--Contenido del Modal-->
+            <div class="form-group">
+                <label for="Boleta" class="Texto"> Número de Boleta:</label>   
+                <input type="text" id="Boleta" name="Boleta" maxlength="10" class = "InputRegistro" autocomplete="off" required>	
+            </div>
+            <div class="form-group">
+                <label for="Carrera" class="Texto"> Carrera:</label>   
+                <select class="form-control" name="Carrera" id="Carrera"></select>			
+            </div>                                
+            <div class="form-group">
+                <label for="Semestre" class="Texto">Semestre:</label>   
+                <input type="number" id="Semestre" name="Semestre" maxlength="20" autocomplete="off" class = "InputRegistro" min="1" max="18" required>					
+            </div>
+            <div class="form-group">
+                <label for="Situacion_Academica" class="Texto">Situación escolar :</label>   
+                <select class="form-control" name="SituacionAcademica" id="SituacionAcademica"></select>				
+            </div>                     
+                                                           
+            <input type="submit" id="SubmitButton_RegistrarAlumno_General" class="btn btn-primary" form="Form_RegistrarAlumno_General" value="Registrar">
+        </form>
 
-                                            </div>
-                                        </div> 
-                                    </div>
-        
-        
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>                        
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        
 
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

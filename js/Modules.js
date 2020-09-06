@@ -130,7 +130,6 @@ export function datatable_consultar_todos(uri, rowsindex, table, init, columns){
         .then(handleHttpErrors)
         .then(res=>res.json())//Para hacer pruebas pasar el .json a .text
         .then(res_json=>{
-            console.log("Aquí");
             console.log(res_json);
             let rows=res_json[rowsindex];
             datatable=table_generate_datatables(table, init, rows, columns);

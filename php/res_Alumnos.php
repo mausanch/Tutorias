@@ -19,11 +19,14 @@ function res_get($id){
                 $result=$conexion->View_DatosByPersonales_Alumno($conexion);
         break;
         case 2://Datos Academicos
-                $result=$conexion->View_DatosByPersonales_Alumno($conexion);
+                $result=$conexion->View_DatosByAcademicos_Alumno($conexion);
         break;
         case 3://Datos Contacto
-                $result=$conexion->View_DatosByPersonales_Alumno($conexion);
+                $result=$conexion->View_DatosByContacto_Alumno($conexion);
         break;
+        case 4://Adeudos
+                $result=$conexion->View_Adeudos_Alumno($conexion);
+    break;
         default:
                 header('HTTP/1.1 405 Method not allowed');
                 header('Allow: GET, POST, PUT, DELETE');

@@ -99,11 +99,12 @@ class DataBase{
         $Adeudos = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $Adeudos->execute();  //Ejecuto la consulta
 
-        $query="SELECT IdEstado FROM Alumnos where Boleta='".$Boleta."' ";//Introduzco la consulta
+        $query="SELECT IdEstado FROM Alumnos where NoBoleta='".$Boleta."'";//Introduzco la consulta
         $result = $Conexion->prepare($query); //Agrego variables (Si es el caso)
-        $result->fetchAll(PDO::FETCH_ASSOC);
-        
-        if ($result[0]['IdEstado']==6){//6 Irregular
+        $result->execute();
+        $result=$result->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($result[0]["IdEstado"]==6){//6 Irregular
             $Situacion_Academica="Regular";
         }
         else{
@@ -111,8 +112,8 @@ class DataBase{
         }
 
         return [
-            "Adeudos_Alumno"=>$Adeudos->fetchAll(PDO::FETCH_ASSOC),
-            "Situacion_Academica"=>$Situacion_Academica 
+            "Adeudos"=>$Adeudos->fetchAll(PDO::FETCH_ASSOC),
+            "Situacion_Academica"=>$Situacion_Academica
         ];//Retorno la matriz en el formato
     }
 
