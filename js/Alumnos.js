@@ -72,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         case Title_Academicos_Adeudos_Alumno:
             Tabla_Adeudos_Alumno('#t_Adeudos', true)
                 .then(datatable=>{
-
                 new $.fn.dataTable.Buttons(datatable, { 
                     buttons: 
                         [
@@ -127,6 +126,10 @@ function View_Informacion_Alummno(){
                 document.getElementById('Semestre').value = resjson.DatosPersonales[0].Semestre;
                 document.getElementById('SituacionAcademica').value = resjson.DatosPersonales[0].SituacionAcademica;
             break;
+
+            case Message_Academicos_Adeudos_Alumno:
+                document.getElementById('label_Situacion_Academica_Alumno').textContent = resjson.Situacion_Academica;
+            break;
         
             case Title_Contacto_Alumno:
                 document.getElementById('Telefono_Fijo').value=resjson.DatosPersonales[0].Telefono_Fijo;
@@ -134,6 +137,7 @@ function View_Informacion_Alummno(){
                 document.getElementById('Email').value = resjson.DatosPersonales[0].Email;
             break;          
             default:
+                
         
               break;
           }
@@ -153,7 +157,9 @@ function Tabla_Adeudos_Alumno(table, init){  //thead_migrantes, tbody_migrantes
             'Materia':'Materia', 
             'Estado':'Estado'
         })
-        .then(datatable=>{resolve(datatable)})
+        .then(datatable=>{
+            resolve(datatable)
+        })
         .catch(e=>{reject(e)})
     })
 }

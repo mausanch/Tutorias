@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 function Tutorados_consultar(table, init){  //thead_alumnos, tbody_alumnos
     return new Promise((resolve, reject)=>{
-        datatable_consultar_todos("php/res_Administrador.php", "Tutorados", table, init, {
+        datatable_consultar_todos("../php/res_Administrador.php", "Tutorados", table, init, {
             'Número de Boleta' : "Número de boleta",
             'Nombre':'Nombre', 
             'Apellido Paterno':'Apellido_Paterno', 
