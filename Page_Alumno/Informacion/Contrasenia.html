@@ -14,12 +14,25 @@
     </head>
     <body>
 
-         <!--Ejemplo de TABLA-->
-        <thead id="thead_alumnos">
-        </thead>
-        <tbody id="tbody_alumnos">
-        </tbody>
-       
+        <form id="Form_Contrasnia_General">      
+            
+            <div class="form-group">
+                <label for="Contrasenia" class="Texto">Contraseña Actual:</label>   
+                <input type="password" id="Password_Current" name ="Password_Current" minlength="8" maxlength="30" class = "InputRegistro" autocomplete="off" required>
+            </div>  
+                  
+            <div class="form-group">
+                <label for="Contrasenia" class="Texto">Nueva Contraseña:</label>   
+                <input type="password" id="Password_New1st" name ="Password_New1st" minlength="8" maxlength="30" class = "InputRegistro" autocomplete="off" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Contrasenia" class="Texto">Confirmar Contraseña:</label>   
+                <input type="password" id="Password_New2scnd" name ="Password_New2scnd" minlength="8" maxlength="30" class = "InputRegistro" autocomplete="off" required>
+            </div>
+    <input type="submit" id="SubmitButton_RegistrarAlumno_General" class="btn btn-primary" form="Form_RegistrarAlumno_General" value="Registrar">
+  </form>
+
 
                 <!--Ejemplo de MODAL-->
                 <div class="modal fade" id="modal_Nombre_Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

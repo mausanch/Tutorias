@@ -26,7 +26,13 @@ function res_get($id){
         break;
         case 4://Adeudos
                 $result=$conexion->View_Adeudos_Alumno($conexion);
-    break;
+        break;
+        case 5://Tutor Actual
+            $result=$conexion->View_TutorActual_Alumno($conexion);
+        break;
+        case 6://Historial
+            $result=$conexion->View_Historial_Alumno($conexion);
+        break;
         default:
                 header('HTTP/1.1 405 Method not allowed');
                 header('Allow: GET, POST, PUT, DELETE');

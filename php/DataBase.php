@@ -128,18 +128,39 @@ class DataBase{
     }
 
     public static function View_Historial_Alumno($mysqli){
-        $Boleta=$_SESSION['USERID']; //De los valores de sesion obtengo el numero de boleta
+        $Boleta="2015030721"; //De los valores de sesion obtengo el numero de boleta
 
         $Conexion = $mysqli ->Conectar(); //Me conecto a la base de datos
         $query="SELECT * FROM View_Historial_Alumno where NoBoleta='".$Boleta."'";//Introduzco la consulta
         $Historial = $Conexion->prepare($query); //Agrego variables (Si es el caso)
         $Historial->execute();  //Ejecuto la consulta
+        $Historial=$Historial->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($Historial[0]['FechaT']=="null"){
-            $Historial[0]['FechaT']="Sin fecha de termino";
+        foreach($Historial as $Termino){
+
+            $Termino['Nombre']=$Termino['Nombre']." ". $Termino['Paterno']." ".$Termino['Materno'];
+            if (empty($Termino['FechaTermino'])){
+                
+                $Termino['FechaTermino']="Sin fecha de termino";
+
+            }
         }
+        $Indice=0;
+        foreach($Historial as $Termino){
+            
+            $Historial[$Indice]['Nombre']=$Historial[$Indice]['Nombre']." ". $Historial[$Indice]['Paterno']." ".$Historial[$Indice]['Materno'];
+            if (empty($Historial[$Indice]['FechaTermino'])){
+                
+                $Historial[$Indice]['FechaTermino']="Sin fecha de termino";
+
+            }
+            $Indice++;
+        }
+
+
+
         return [
-            "Historial"=>$Historial->fetchAll(PDO::FETCH_ASSOC)           
+            "Historial"=>$Historial
         ];//Retorno la matriz en el formato
     }
 
