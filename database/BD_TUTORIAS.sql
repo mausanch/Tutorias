@@ -1,3 +1,4 @@
+
 drop database if exists ProyectoTutoriasFinal;
 create database ProyectoTutoriasFinal;
 use ProyectoTutoriasFinal;
@@ -9,7 +10,7 @@ use ProyectoTutoriasFinal;
 		);
 		
         create table Materias(
-		IdMateria int AUTO_INCREMENT  not null,
+		IdMateria varchar(4) not null,
 		Materia varchar(50) not null,
 		primary key(IdMateria)
         );
@@ -40,9 +41,9 @@ use ProyectoTutoriasFinal;
         
 		DROP TABLE IF EXISTS  Profesores;           
 		create table Profesores(
-		       NoEmpleado bigint(10) not null,
-			   Contrasenia varchar(100) not null, 
-			   Nombre varchar(30)not null,
+		        NoEmpleado bigint(10) not null,
+			    Contrasenia varchar(100) not null, 
+			    Nombre varchar(30)not null,
 				Paterno varchar(20)not null ,
 				Materno varchar(30)not null ,
                 IdGenero int not null ,
@@ -85,7 +86,7 @@ use ProyectoTutoriasFinal;
 			IdAlumnoProfesor int not null auto_increment,
 			NoBoleta int(20) not null,
 			NoEmpleado bigint(20) not null,
-			IdEstado int not null check(IdEstado in(4,5,11,12)), /*4-Pendiente, 5-Sin asignar, 11-Aceptado ,12-Rechazado*/
+			IdEstado int not null check(IdEstado in(4,5,11,10,12)), /*4-Pendiente, 5-Sin asignar, 11-Aceptado ,12-Rechazado*/
             FechaSolicitud date not null,
 			primary key(IdAlumnoProfesor),
 			foreign key(NoBoleta) references Alumnos(NoBoleta),
@@ -98,7 +99,7 @@ use ProyectoTutoriasFinal;
 				IdAlumnoProfesor int,
 				FechaInicio date not null,
 				FechaTermino date null,
-				IdEstado int not null check(IdEstado in(1,10)),
+				IdEstado int not null check(IdEstado in(1,10)), /*1.Activo , 10-Finalizado*/
 				primary key (IdHistorial),
 				foreign key(IdEstado) references Estados(IdEstado),
 				foreign key(IdAlumnoProfesor) references AlumnoProfesor(IdAlumnoProfesor)
@@ -107,7 +108,7 @@ use ProyectoTutoriasFinal;
 		create table AdeudosMateriasAlumno(
 					IdAdeudo int not null,
                     NoBoleta int(10) not null,
-                    IdMateria int not null,
+                    IdMateria varchar(4) not null,
 					IdEstado int not null check(IdEstado in ('8','9')), /*8-Reprobada 9-Aprobada*/
                     primary key (IdAdeudo),
 					foreign key(IdEstado) references Estados(IdEstado),
@@ -143,7 +144,7 @@ insert into Carreras(Carrera) values ("Ing. Bionica");
 insert into Carreras(Carrera) values ("Ing. en Energia");
 insert into Carreras(Carrera) values ("Ing. en Sistemas Automotrices");
 
-insert into Materias (Materia) values   ("PROGRAMACION"),
+/*insert into Materias (Materia) values ("PROGRAMACION"),
 									    ("ANALISIS Y DISEÑO DE SISTEMAS"),
 									    ("ESTRUCTURA DE DATOS"),
 										("ADMINISTRACION DE SISTEMAS OPERATIVOS"),
@@ -194,7 +195,7 @@ insert into Materias (Materia) values   ("PROGRAMACION"),
 										("LOGICA DIFUSA"),
 										("SISTEMAS DE INFORMACION GEOGRAFICA"),
 										("PROGRAMACION DE DISPOSITIVOS MOVILES"),
-										("NORMATIVIDAD EN TELECOMUNICACIONES E INFORMATICA");
+										("NORMATIVIDAD EN TELECOMUNICACIONES E INFORMATICA"); */
 
 insert into Academia(Academia) values ("TELE");
 insert into Academia(Academia) values ("MEC");
@@ -221,22 +222,12 @@ insert into Alumnos values (2015030721,"12345","Nadia","Lopez","Tirado", 1 , 4 ,
 insert into Alumnos values (2015170720,"123","Mauricio","Sanchez","Moreno", 1 , 4 ,1,"1999-09-19","55555555","5585963625", "mauricio@hotmail.com","Campismo",7);
 insert into Alumnos values (2015080720,"12","Ricardo","Flores","Lima", 1 , 4 ,1,"1999-01-13","58888888","5556465544", "ricardo@hotmail.com","Cilcismo",6);
 insert into Alumnos values ("2015020709","12340","ARTURO","LANDA","ESPINOSA", 2 , 6 ,2,"1999-10-18","58302940","5523258868", "arturolandae@hotmail.com","NATACION Y BASKET",7);
-
+/*
 insert into AdeudosMateriasAlumno values (1, 2015030721, 4, 8);
 insert into AdeudosMateriasAlumno values (2, 2015030721, 11, 9);
 insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
+*/
 
-/*Pruebas de solicitud*/
-insert into AlumnoProfesor values (1,2015030721,2589654510,11,"2019-06-18");
-insert into AlumnoProfesor values (5,2015030721,2576767687,1,"2019-12-18");
-insert into AlumnoProfesor values (6,2015030721,2345567890,4,"2020-01-01");
-
-insert into AlumnoProfesor values (2,2015170720,2589654510,4,"2020-08-17");
-insert into AlumnoProfesor values (3,2015080720,2576767687,11,"2020-08-18");
-insert into AlumnoProfesor values (4,2015020709,2576767687,4,"2020-08-20");
-
-insert into Historial values (1,1,"2019-06-20","2019-12-20",10); /*Crear trigger para historial cuando la solicitud es aceptada y la relacion esta activa, la fecha de termino aparezca "sin fecha de termino"*/
-insert into Historial values (2,5,"2019-12-20",null ,1);
 
 /*--------------------------------------NUEVAS VISTAS--------------------------------------------------/
 
@@ -258,10 +249,6 @@ drop view if exists View_OpcionesByEstadoAdeudo_General;
 		 where IdEstado=8 or IdEstado=9;
 
 select * from View_OpcionesByEstadoAdeudo_General;
-
-
-
-
 
 /******************************************ALUMNOS************************************************/
         
@@ -369,7 +356,7 @@ select * from View_OpcionesByEstadoAdeudo_General;
                    on Profesores.NoEmpleado=AlumnoProfesor.NoEmpleado;
     
     select * from View_Historial_Alumno;   
-    
+    select*from Historial;
 /*************************************PROFESOR****************************************/
     
         drop view if exists View_Tutorados_Profesor;
@@ -492,7 +479,7 @@ select * from View_OpcionesByEstadoAdeudo_General;
              Alumnos.Nombre as Nombre,
              Alumnos.Paterno as Paterno,
              Alumnos.Materno as Materno
-			 from  Alumnos;
+	   from  Alumnos;
    
     select * from View_Tutorados_Administrador;
     
@@ -510,10 +497,10 @@ select * from View_OpcionesByEstadoAdeudo_General;
              AlumnoProfesor.NoEmpleado as NumeroEmpleado
 	   from  Alumnos
  inner join  AlumnoProfesor
-		 on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta
- inner join Historial
-		on Historial.IdAlumnoProfesor=AlumnoProfesor.IdAlumnoProfesor
-	  where Historial.IdEstado=1;
+		 on  AlumnoProfesor.NoBoleta=Alumnos.NoBoleta
+ inner join  Historial
+		 on  Historial.IdAlumnoProfesor=AlumnoProfesor.IdAlumnoProfesor
+	  where  Historial.IdEstado=1;
    
     select * from View_TutoradosByDetalle_Administrador;
     
@@ -533,6 +520,78 @@ select * from View_OpcionesByEstadoAdeudo_General;
    
     select * from View_TutoradosByTutor_Administrador;
     
-   
+/*************************************************************************************************************/
     
-    /*************************************************************************************************************/
+    
+    /*Pruebas de solicitud*/
+insert into AlumnoProfesor values (1,2015030721,2589654510,4,"2019-06-18");
+/*insert into AlumnoProfesor values (5,2015030721,2576767687,11,"2019-12-18");
+insert into AlumnoProfesor values (6,2015030721,2345567890,4,"2020-01-01");*/
+
+insert into AlumnoProfesor values (2,2015170720,2589654510,4,"2020-08-17");
+/*insert into AlumnoProfesor values (3,2015080720,2576767687,11,"2020-08-18");*/
+insert into AlumnoProfesor values (3,2015020709,2576767687,4,"2020-08-20");
+
+/*insert into Historial values (1,1,"2019-06-20","2019-12-20",10); /*Crear trigger para historial cuando la solicitud es aceptada y la relacion esta activa, la fecha de termino aparezca "sin fecha de termino"*/
+/*insert into Historial values (2,5,"2019-12-20",null ,1); */
+
+select * from Historial;
+select * from AlumnoProfesor;
+select * from Estados;    
+ 
+/***********CAMBIAR ESTADO CUANDO PROFESOR ACEPTA TUTORADO Y LLENAR HISTORIAL*********/   
+drop trigger if exists CambiarEstadoHistorial;
+delimiter **
+create trigger CambiarEstadoHistorial after update on AlumnoProfesor /*Cambiar update cuando profesor acepte*/
+  FOR EACH ROW 
+  begin 
+if (new.IdEstado=11) then
+	   insert into Historial(IdAlumnoProfesor, FechaInicio,FechaTermino,IdEstado) 
+       values (new.IdAlumnoProfesor,now(),null,1) ;	 
+       end if;
+	  
+if (new.IdEstado=10) then
+	   update Historial   
+		  set FechaTermino=now(),
+	          IdEstado=10
+        where IdAlumnoProfesor=new.IdAlumnoProfesor;
+       end if;
+end;**
+
+drop trigger if exists CambiarEstadoAlumnoProfesor;
+delimiter **
+create trigger CambiarEstadoAlumnoProfesor after update on Historial /*Cambiar update cuando profesor acepte*/
+  FOR EACH ROW 
+  begin 
+  /*if (new.IdEstado=10)then
+     update AlumnoProfesor
+     set IdEstado=10
+     where NoBoleta=NoBoleta;*/
+     
+     declare validar int;
+set validar= (select IdAlumnoProfesor from AlumnoProfesor where Historial.IdAlumnoProfesor=AlumnoProfesor.IdAlumnoProfesor and NoBoleta=new.NoBoleta);
+update Historial 
+set IdEstadoH=10
+where IdAlumnoProfesor=validar;
+   /*end if;*/
+  end;**
+
+/*PRUEBA TRIGGER*/
+  
+  /*Aceptar alumno 11=Aceptado*/
+       update AlumnoProfesor
+       set IdEstado=11
+       where IdAlumnoProfesor=1;
+       
+  /*Rechazar alumno 12=Rechazado*/
+       update AlumnoProfesor
+       set IdEstado=12
+       where IdAlumnoProfesor=1;
+       
+  /*Finalizar relacion alumno 10=Fnalizado*/
+       update AlumnoProfesor
+       set IdEstado=10
+       where IdAlumnoProfesor=2;
+     
+select * from AlumnoProfesor;
+select * from Historial;
