@@ -9,7 +9,7 @@ const tbody_Adeudo = document.getElementById("tbody_Adeudos");
 const thead_Alumno = document.getElementById('thead_Alumno');
 const tbody_Alumno = document.getElementById("tbody_Alumno");
 /*--------------------------------------------------Forms-----------------------------------------------------*/
-const form_Alumno_registrar = document.getElementById('Form_RegistrarAlumno_General');
+const form_Alumno = document.getElementById('Form_Alumno');
 const form_Alumno_submit = document.getElementById('f_Alumno_submit');
 const form_Alumno_action = document.getElementById('f_Alumno_action');
 
@@ -31,32 +31,38 @@ const Title_Historial_Alumno="Historial";
 var Message;
 
 var Title=document.getElementsByTagName("TITLE")[0].text;
-var Dir="";
+
+var PreDir="";
 
 switch (Title) {
     case Title_Personales_Alumno:
         Message=Message_Personales_Alumno;
+        PreDir="../../";
     break;
 
     case Title_Academicos_Datos_Alumno:
         Message=Message_Academicos_Datos_Alumno;
+        PreDir="../../../";
     break;
 
     case Title_Academicos_Adeudos_Alumno:
         Message=Message_Academicos_Adeudos_Alumno;
-        Dir="../"
+        PreDir="../../../";
     break;
 
     case Title_Contacto_Alumno:
         Message=Message_Contacto_Alumno;
+        PreDir="../../";
     break;  
 
     case Title_Tutor_Alumno:
         Message=Message_Tutor_Alumno;
+        PreDir="../../";
     break;  
 
     case Title_Historial_Alumno:
         Message=Message_Historial_Alumno;
+        PreDir="../../";
     break;  
 
     default:
@@ -97,13 +103,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
             );
 
         break;
+        
+        case Title_Historial_Alumno:
+            Tabla_HistorialTutores_Alumno('#t_Historial', true);
+
+        break;
+
     }
 });
 
 
 function View_Informacion_Alummno(){
     console.log(Message);
-    fetch(Dir+'../../php/res_Alumnos.php/'+Message, {
+    fetch(PreDir+'php/res_Alumnos.php/'+Message, {
         method: 'GET'
     })
     .then(res=>res.json())
@@ -137,8 +149,7 @@ function View_Informacion_Alummno(){
                 document.getElementById('Email').value = resjson.DatosPersonales[0].Email;
             break;          
             default:
-                
-        
+                console.log("Here");
               break;
           }
 
@@ -149,10 +160,10 @@ function View_Informacion_Alummno(){
         console.log("Error");
     }) 
 }
-
-function Tabla_Adeudos_Alumno(table, init){  //thead_migrantes, tbody_migrantes
+/*---------------------------------------------Funciones de Tablas------------------------------------------------------*/
+function Tabla_Adeudos_Alumno(table, init){ 
     return new Promise((resolve, reject)=>{
-        datatable_consultar_todos("../../../php/res_Alumnos.php/"+Message, "Adeudos", table, init, {
+        datatable_consultar_todos(PreDir+"php/res_Alumnos.php/"+Message, "Adeudos", table, init, {
             'Identificador de materia' : "Identificador de materia",
             'Materia':'Materia', 
             'Estado':'Estado'
@@ -164,10 +175,26 @@ function Tabla_Adeudos_Alumno(table, init){  //thead_migrantes, tbody_migrantes
     })
 }
 
-/*
-form_Alumno_registrar.onsubmit = function(e){
+function Tabla_HistorialTutores_Alumno(table, init){  
+    return new Promise((resolve, reject)=>{
+        datatable_consultar_todos(PreDir+"php/res_Alumnos.php/"+Message, "Historial", table, init, {
+            'Nombre del Tutor' : "Nombre",
+            'Fecha de Inicio':'FechaInicio', 
+            'Fecha de termino':'FechaTermino',
+            'Estado':'Estado'
+        })
+        .then(datatable=>{
+            resolve(datatable)
+        })
+        .catch(e=>{reject(e)})
+    })
+}
+
+
+
+form_Alumno.onsubmit = function(e){
     e.preventDefault();
     let formData = new FormData(form_laborales_registrar);
     let formJson = JSON.stringify(Object.fromEntries(formData));
     console.log(formJson);
-}*/
+}

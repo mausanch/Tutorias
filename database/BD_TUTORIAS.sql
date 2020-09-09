@@ -228,6 +228,20 @@ insert into AdeudosMateriasAlumno values (2, 2015030721, 11, 9);
 insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
 */
 
+<<<<<<< HEAD
+=======
+/*Pruebas de solicitud*/
+insert into AlumnoProfesor values (1,2015030721,2589654510,11,"2019-06-18");
+insert into AlumnoProfesor values (5,2015030721,2576767687,11,"2019-12-18");
+insert into AlumnoProfesor values (6,2015030721,2345567890,4,"2020-01-01");
+
+insert into AlumnoProfesor values (2,2015170720,2589654510,4,"2020-08-17");
+insert into AlumnoProfesor values (3,2015080720,2576767687,11,"2020-08-18");
+insert into AlumnoProfesor values (4,2015020709,2576767687,4,"2020-08-20");
+
+insert into Historial values (1,1,"2019-06-20","2019-12-20",10); /*Crear trigger para historial cuando la solicitud es aceptada y la relacion esta activa, la fecha de termino aparezca "sin fecha de termino"*/
+insert into Historial values (2,5,"2019-12-20",null ,1);
+>>>>>>> 99fe7f355c1b428314328a9807947256cc21bf83
 
 /*--------------------------------------NUEVAS VISTAS--------------------------------------------------/
 
