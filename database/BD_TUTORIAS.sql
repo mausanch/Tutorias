@@ -560,17 +560,6 @@ if (new.IdEstado=10) then
 	          IdEstado=10
         where IdAlumnoProfesor=new.IdAlumnoProfesor;
        end if;
-       
-       
-       /*Historial
-       1   3                   4
-       2   3                   11
-       3   3                   10
-       
-       */
-       
-
-
 end;**
 
 /*Nuevo registro historial*/
@@ -581,8 +570,6 @@ create trigger NuevoRegistroHistorial after insert on AlumnoProfesor /*Cambiar u
   begin 
      insert into Historial values (null,new.IdAlumnoProfesor,now(), null, 4);
   end;**
- 
- 
  
  
 /*Actualizar historial*/
@@ -606,10 +593,24 @@ create trigger ActualizarHistorial after update on AlumnoProfesor /*Cambiar upda
  
  end;**
  
- 
- 
- 
- 
+drop procedure if exists AceptarTutorado;
+delimiter **
+create procedure AceptarTutorado(in boleta bigint(10), in empleado varchar(20))
+begin
+	declare IdAlumnoProfesor int;
+    set IdAlumnoProfesor= (select IdAlumnoProfesor 
+						   from AlumnoProfesor 
+                           where NoBoleta=boleta and IdEstado!=10 limit 1);
+                         
+    if (IdAlumnoProfesor!=null)then
+        update AlumnoProfesor
+        set IdEstado=10
+        where IdAlumnoProfesor=IdAlumnoProfesor;
+      else 
+        insert into AlumnoProfesor values (null, boleta, empleado, 11, now()  );
+      end if;
+		end; **
+delimiter ;
  
  
  
