@@ -81,7 +81,7 @@ use ProyectoTutoriasFinal;
             foreign key (IdGenero) references Genero(IdGenero) 
            );
            
-       
+        DROP TABLE IF EXISTS  AlumnoProfesor;
 		create table AlumnoProfesor (
 			IdAlumnoProfesor int not null auto_increment,
 			NoBoleta int(20) not null,
@@ -228,20 +228,6 @@ insert into AdeudosMateriasAlumno values (2, 2015030721, 11, 9);
 insert into AdeudosMateriasAlumno values (3, 2015030721, 12, 8);
 */
 
-<<<<<<< HEAD
-=======
-/*Pruebas de solicitud*/
-insert into AlumnoProfesor values (1,2015030721,2589654510,11,"2019-06-18");
-insert into AlumnoProfesor values (5,2015030721,2576767687,11,"2019-12-18");
-insert into AlumnoProfesor values (6,2015030721,2345567890,4,"2020-01-01");
-
-insert into AlumnoProfesor values (2,2015170720,2589654510,4,"2020-08-17");
-insert into AlumnoProfesor values (3,2015080720,2576767687,11,"2020-08-18");
-insert into AlumnoProfesor values (4,2015020709,2576767687,4,"2020-08-20");
-
-insert into Historial values (1,1,"2019-06-20","2019-12-20",10); /*Crear trigger para historial cuando la solicitud es aceptada y la relacion esta activa, la fecha de termino aparezca "sin fecha de termino"*/
-insert into Historial values (2,5,"2019-12-20",null ,1);
->>>>>>> 99fe7f355c1b428314328a9807947256cc21bf83
 
 /*--------------------------------------NUEVAS VISTAS--------------------------------------------------/
 
@@ -554,14 +540,18 @@ select * from AlumnoProfesor;
 select * from Estados;    
  
 /***********CAMBIAR ESTADO CUANDO PROFESOR ACEPTA TUTORADO Y LLENAR HISTORIAL*********/   
+
 drop trigger if exists CambiarEstadoHistorial;
 delimiter **
 create trigger CambiarEstadoHistorial after update on AlumnoProfesor /*Cambiar update cuando profesor acepte*/
   FOR EACH ROW 
   begin 
+  declare boleta bigint;
+  set boleta=(select NoBoleta from AlumnoProfesor where IdAlumnoProfesor=new.IdAlumnoProfesor);
+  
 if (new.IdEstado=11) then
 	   insert into Historial(IdAlumnoProfesor, FechaInicio,FechaTermino,IdEstado) 
-       values (new.IdAlumnoProfesor,now(),null,1) ;	 
+       values (new.IdAlumnoProfesor,now(),null,1) ;	
        end if;
 	  
 if (new.IdEstado=10) then
@@ -570,7 +560,67 @@ if (new.IdEstado=10) then
 	          IdEstado=10
         where IdAlumnoProfesor=new.IdAlumnoProfesor;
        end if;
+       
+       
+       /*Historial
+       1   3                   4
+       2   3                   11
+       3   3                   10
+       
+       */
+       
+
+
 end;**
+
+/*Nuevo registro historial*/
+drop trigger if exists NuevoRegistroHistorial
+delimiter **
+create trigger NuevoRegistroHistorial after insert on AlumnoProfesor /*Cambiar update cuando profesor acepte*/
+  FOR EACH ROW 
+  begin 
+     insert into Historial values (null,new.IdAlumnoProfesor,now(), null, 4);
+  end;**
+ 
+ 
+ 
+ 
+/*Actualizar historial*/
+drop trigger if exists ActualizarHistorial;
+delimiter **
+create trigger ActualizarHistorial after update on AlumnoProfesor /*Cambiar update cuando profesor acepte*/
+  FOR EACH ROW 
+  begin 
+  declare IdHistorial int;
+  set IdHistorial= (select IdHistorial 
+                    from AlumnoProfesor
+                    where IdAlumnoProfesor=new.IdAlumnoProfesor 
+                    order by IdHistorial desc limit 1);
+   
+  
+  	  update Historial
+	  set FechaTermino=now()
+	  where IdHistorial=Historial.IdHistorial;
+      
+      insert into Historial values (null,new.IdAlumnoProfesor,now(),null, new.IdEstado);
+ 
+ end;**
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
 
 drop trigger if exists CambiarEstadoAlumnoProfesor;
 delimiter **
@@ -581,8 +631,8 @@ create trigger CambiarEstadoAlumnoProfesor after update on Historial /*Cambiar u
      update AlumnoProfesor
      set IdEstado=10
      where NoBoleta=NoBoleta;*/
-     
-     declare validar int;
+
+declare validar int;
 set validar= (select IdAlumnoProfesor from AlumnoProfesor where Historial.IdAlumnoProfesor=AlumnoProfesor.IdAlumnoProfesor and NoBoleta=new.NoBoleta);
 update Historial 
 set IdEstadoH=10
@@ -600,12 +650,468 @@ where IdAlumnoProfesor=validar;
   /*Rechazar alumno 12=Rechazado*/
        update AlumnoProfesor
        set IdEstado=12
-       where IdAlumnoProfesor=1;
+       where IdAlumnoProfesor=2;
        
   /*Finalizar relacion alumno 10=Fnalizado*/
        update AlumnoProfesor
        set IdEstado=10
-       where IdAlumnoProfesor=2;
+       where IdAlumnoProfesor=1;
      
 select * from AlumnoProfesor;
 select * from Historial;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*-----------------------Cambiar estado de AlumnoProfesor a sin asignar------------------------*/
+use ProyectoTutoriasFinal     
+delimiter **
+create trigger ActualizarRelacion
+after update on Profesores
+for each row 
+BEGIN
+if (new.IdEstado=5) then
+	   update AlumnoProfesor
+       set IdEstado=4 
+       where NoEmpleado=(select NoEmpleado from Profesores where NoEmpleado=new.NoEmpleado);
+	end if;
+END;**
+/*-----------------------------------Pruebas-------------------------*/
+UPDATE Profesores set IdEstado=5 where NoEmpleado='2345567890';
+select * from Profesores;
+select * from Alumnos;
+select * from alumnoprofesor;
+select * from Estados;
+
+/*-------------------Crea IdAdeudo en AdeudosAlumnos-----------------*/
+delimiter **
+create trigger RegistrarAdeudos
+after insert on Alumnos
+for each row 
+BEGIN
+if (new.IdEstado=6) then
+	   insert into AdeudosAlumno(NoBoleta) values (new.NoBoleta);
+	end if;
+END;**
+
+/***********ACEPTAR ALUMNO*********/   
+drop procedure if exists AceptarTutorado;
+delimiter **
+create procedure AceptarTutorado(in boleta varchar(20), in empleado varchar(20))
+begin
+	update AlumnoProfesor
+			set IdEstado="aceptado"
+             where NoBoleta=boleta and NoEmpleado=empleado;
+            
+		end; **
+delimiter ;
+
+/*call AceptarTutorado("2015030720","2345567890"); <------------------PRUEBA*/
+/*call AceptarTutorado("2015030720","2576767687"); Acepta nuevo tutor*/
+
+
+
+/*INGRESAR UN NUEVO TUTOR*/
+drop procedure if exists NuevoTutor;
+delimiter **
+create procedure NuevoTutor(in boleta varchar(20),in clave varchar(20))
+begin
+declare validar int;
+set validar= (select IdAlumnoProfesor from AlumnoProfesor where NoBoleta=boleta);
+update Historial 
+set IdEstadoH="Finalizado"
+where IdAlumnoProfesor=validar;
+
+insert into AlumnoProfesorV(NoBoleta,ClaveAceptaR,IdEstado) 
+       values (boleta, clave,"pendiente");
+
+       
+       end; **
+delimiter ;
+
+/*call NuevoTutor("2015030721", "123456789"); <------------------PRUEBA */
+
+
+
+
+
+
+/**********************views******************/
+
+drop view if exists Historial_Pendientes;
+Create VIEW Historial_Pendientes AS 
+			SELECT * FROM AlumnoProfesor
+				WHERE IdEstado = "Pendiente";  
+ 
+drop view if exists Vista_Alumnos;
+create VIEW Vista_Alumnos AS 
+			SELECT Alumnos.NoBoleta,
+                   Alumnos.Nombre as "Nombre(s)",
+                   Alumnos.APaterno as "Apellido Paterno", 
+				   Alumnos.AMaterno  as "Apellido Materno", 
+				   Alumnos.TelFijo as "Telefono Fijo", 
+				   Alumnos.Celular as Celular,
+                   Alumnos.CorreoElectronico as "Correo Electronico" 
+            FROM Alumnos  
+            ;  
+            
+drop view if exists Tutores_Activos;	
+create view Tutores_Activos as 
+SELECT Alumnos.Nombre as "Nombre(s)",
+       Alumnos.APaterno as "Apellido Paterno",
+	   Alumnos.AMaterno as "Apellido Materno",
+       Alumnos.NoBoleta as "Numero de Boleta",
+       Historial.IdEstado as "Status"
+    FROM Alumnos INNER JOIN AlumnoProfesor 
+						ON AlumnoProfesor.NoBoleta = Alumnos.NoBoleta
+				INNER JOIN Historial 
+						ON AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor
+								WHERE Historial.IdEstado="aceptado";
+                                
+/***************Visualizar vistas*************/                          
+/*select * from Tutores_Activos;
+select *from Historial_Pendientes ;
+select *from Vista_Alumnos;*/
+                            
+/***********************procedimientos extras ALUMNOS**********************/  
+
+drop procedure if exists CambiarContraseniaAlumno ;
+delimiter **
+create procedure CambiarContraseniaAlumno(in boleta varchar(20), in contrasenia varchar(40))
+begin
+	update Alumnos
+    set Contrasenia=contrasenia
+    where NoBoleta=boleta;
+end; **
+delimiter ;                                
+
+/*call CambiarContraseniaAlumno("2015030720","12349"); <------------------PRUEBA*/
+ 
+
+drop procedure if exists CambiarCarreraAlumno ;
+delimiter **
+create procedure CambiarCarreraAlumno(in boleta varchar(20), in carrera INT)
+begin
+	update Alumnos
+    set IdCarrera=carrera /*SE TIENE QUE PONER UNA LISTA DE SELECCION QUE POR DEFAULT DÉ NUMEROS*/
+    where NoBoleta=boleta;
+end; **
+delimiter ;
+
+/*call CambiarCarreraAlumno("2015030720",1); <------------------PRUEBA*/
+                            
+drop procedure if exists CambiarSemestreAlumno ;
+delimiter **
+create procedure CambiarSemestreAlumno(in boleta varchar(20), in semestre INT)
+begin
+	update Alumnos
+    set Semestre=semestre 
+    where NoBoleta=boleta;
+end; **
+delimiter ;
+
+/*call CambiarSemestreAlumno("2015030720",10); <------------------PRUEBA*/
+
+drop procedure if exists CambiarTelefonoFijo ;
+delimiter **
+create procedure CambiarTelefonoFijo(in boleta varchar(20), in tel varchar(10))
+begin
+	update Alumnos
+    set TelFijo=tel 
+    where NoBoleta=boleta;
+end; **
+delimiter ;
+
+/*call CambiarTelefonoFijo("2015030720","5523258888"); <------------------PRUEBA*/
+
+drop procedure if exists CambiarCelular ;
+delimiter **
+create procedure CambiarCelular(in boleta varchar(20), in cel varchar(10))
+begin
+	update Alumnos
+    set Celular=cel 
+    where NoBoleta=boleta;
+end; **
+delimiter ;
+
+/*call CambiarCelular("2015030720","58302340"); <------------------PRUEBA*/
+
+drop procedure if exists CambiarCorreo ;
+delimiter **
+create procedure CambiarCorreo(in boleta varchar(20), in correo varchar(40))
+begin
+	update Alumnos
+    set CorreoElectronico=correo 
+    where NoBoleta=boleta;
+end; **
+delimiter ;
+
+/*call CambiarCorreo("2015030720","nadiajaqueline@hotmail.com"); <------------------PRUEBA*/
+
+/***********************procedimientos extras PROFESORES**********************/ 
+
+drop procedure if exists CambiarContraseniaProfesores ;
+delimiter **
+create procedure CambiarContraseniaProfesores(in empleado varchar(20), in contra varchar(40))
+begin
+	update Profesores
+    set ContraseniaP=contra 
+    where NoEmpleado=empleado;
+end; **
+delimiter ;
+
+/*call CambiarContraseniaProfesores("2345567890","12345"); <------------------PRUEBA*/
+
+drop procedure if exists CambiarAcademiaProfesores ;
+delimiter **
+create procedure CambiarAcademiaProfesores(in empleado varchar(20), in academia int)
+begin
+	update Profesores
+    set IdAcademia=academia 
+    where NoEmpleado=empleado;
+end; **
+delimiter ;
+
+/*call CambiarAcademiaProfesores("2345567890",3); <------------------PRUEBA*/
+
+drop procedure if exists CambiarTurnoProfesores ;
+delimiter **
+create procedure CambiarTurnoProfesores(in empleado varchar(20), in turno varchar(40))
+begin
+	update Profesores
+    set Turno=turno 
+    where NoEmpleado=empleado;
+end; **
+delimiter ;
+
+/*call CambiarTurnoProfesores("2345567890","Matutino"); <------------------PRUEBA*/
+/*call CambiarTurnoProfesores("2345567890","Mañana"); verificar que otra cosa fuera de los checks no se registra*/
+
+
+drop procedure if exists CambiarClaveAceptacionProfesores ;
+delimiter **
+create procedure CambiarClaveAceptacionProfesores(in empleado varchar(20), in clave varchar(40))
+begin
+	update Profesores
+    set ClaveAcepta=clave
+    where NoEmpleado=empleado;
+end; **
+delimiter ;
+
+/*call CambiarClaveAceptacionProfesores("2345567890","123"); <------------------PRUEBA*/
+
+
+/*************************** Visualizar ADEUDOS DE MATERIAS ALUMNOS**************************************/
+
+drop procedure if exists VisualizarAdeudosAlumnos ;
+delimiter **
+create procedure VisualizarAdeudosAlumnos(in boleta varchar(20))
+begin
+	select Materia from Adeudos, Materias where Adeudos.NoBoleta=boleta
+    and Materias.IdMateria=Adeudos.IdMateria ;
+end; **
+delimiter ;
+
+/*call VisualizarAdeudosAlumnos("2015030720"); <------------------PRUEBA*/
+drop procedure if exists EliminarAdeudosAlumnos ;
+delimiter **
+create procedure EliminarAdeudosAlumnos(in boleta varchar(20), in materia int)
+begin
+    delete from Adeudos where NoBoleta=boleta
+    and IdMateria=materia ;
+end; **
+delimiter ;
+/*call EliminarAdeudosAlumnos("2015030720", 5); <------------------PRUEBA*/
+
+/**********************SI SON 5 TUTORES MANDAR ALERTA DE QUE TIENE QUE ACUDIR A OFICINA DE TUTORIAS************************/
+drop procedure if exists Numero_Tutores ;
+delimiter **
+create procedure Numero_Tutores(in boleta varchar(20))
+begin
+declare num int;
+
+declare msj varchar(100);
+  set num=  (select count(*) 
+			 as "Numero de Tutores en su Historial" 
+             from AlumnoProfesor
+             group by NoBoleta=boleta);
+  if (num> 5) then
+             set msj="TIENES QUE ACUDIR A LA OFICINA DE TUTORIAS";
+             select msj as Resultado;
+             else 
+             select NoBoleta,count(*) 
+			 as "Numero de Tutores en su Historial" 
+             from AlumnoProfesor
+             group by NoBoleta=boleta;
+             end if;
+	
+
+end; **
+delimiter ;
+/*call Numero_Tutores("2015030721"); <------------------PRUEBA*/
+
+
+/**---------------------------------------------------------------------------Dorime-----------------------------------------------------------------------------*/ 
+/*
+select *from Vista_Alumnos where NoBoleta=2015020720;
+select * from AlumnoProfesor  where NoEmpleado=2589654510;
+SELECT* FROM HISTORIAL;
+select *from Profesores;
+*/
+
+
+	drop view if exists EstadoTutorados;	
+	create view EstadoTutorados as 
+	SELECT 
+		   Alumnos.Nombre as "Nombre(s)",
+		   Alumnos.APaterno as "Apellido Paterno",
+		   Alumnos.AMaterno as "Apellido Materno",
+		   Alumnos.NoBoleta as "Numero de Boleta",
+		   Profesores.NoEmpleado,
+		   Historial.IdEstado
+		FROM Alumnos INNER JOIN AlumnoProfesor 
+							ON AlumnoProfesor.NoBoleta = Alumnos.NoBoleta
+					Inner JOIN Profesores 
+							On AlumnoProfesor.NoEmpleado=Profesores.NoEmpleado
+					Inner join Historial
+							ON AlumnoProfesor.IdAlumnoProfesor=Historial.IdAlumnoProfesor;
+
+
+
+
+drop view if exists DatosProfesor;	
+	create view DatosProfesor as 
+	SELECT 
+		   Profesores.NombreP as "Nombre(s)",
+		   Profesores.APaternoP as "Apellido Paterno",
+		   Profesores.AMaternoP as "Apellido Materno",
+		   Profesores.NoEmpleado
+		FROM Profesores; 
+        /*
+   select *from DatosProfesor where NoEmpleado=2345567890;
+   */
+   
+   drop view if exists Tutor_Totorado;
+create  view Tutor_Tutorado as 
+SELECT
+	Alumnos.NoBoleta,
+    Alumnos.Nombre as "Nombre(s)",
+    Alumnos.APaterno as "Apellido Paterno",
+    Alumnos.AMaterno as "Apellido Materno",
+    profesores.NoEmpleado, 
+    alumnoprofesor.IdEstado "Estado"
+    FROM Alumnos INNER JOIN AlumnoProfesor 
+						ON AlumnoProfesor.NoBoleta = Alumnos.NoBoleta
+				INNER JOIN profesores
+						ON alumnoprofesor.NoEmpleado=profesores.NoEmpleado;
+			/*		
+                        
+ select *from Tutor_Tutorado where NoEmpleado="2589654510";
+ select Materia from Materias;
+ 
+ select *from adeudos;*/
+/*
+drop view if exists Adeudos_Materia; 
+create view Adeudos_Materia as 
+    select 
+    adeudos.idAdeudo as "Número de materia",
+    alumnos.NoBoleta,
+    alumnos.Nombre as "Nombre(s)",
+    alumnos.APaterno as "Apellido Paterno",
+    alumnos.AMaterno as "Apellido Materno",
+    materias.Materia as "Nombre de la materia"
+     from alumnos inner Join adeudos 
+						on adeudos.NoBoleta=alumnos.NoBoleta
+				  inner Join materias 
+						on adeudos.IdMateria=materias.IdMateria;*/
+        /*                
+		select *from Adeudos_Materia where NoBoleta='2015070720';
+        
+        select *from profesores;
+        
+        select *from Academia;*/
+create  view Profesores_Tutores as 
+SELECT
+    profesores.NoEmpleado,
+    profesores.NombreP as "Nombre(s)",
+    profesores.APaternoP as  "Apellido Paterno",
+    profesores.AMaternoP as "Apellido Materno",
+    profesores.AMaternoP  as "Turno",
+    Academia.Academia as "Academia"
+    FROM Profesores inner Join Academia 
+						on Academia.IdAcademia=Profesores.IdAcademia;                        
+                        
+
+         
+         
+ /*Poner dos botones, tienes adeudos  sí y no, si es sí que mande un formulario para seleccionar materia una por una*/
+/*INSERT into Adeudos(NoBoleta) values("2015030721");*/
+/*INSERT into Adeudos(NoBoleta) values("2015030721");*/
+
+
+/*select*from sexoAP;
+drop view Tutorados;*/
+create  view Tutorados as 
+SELECT
+	alumnoprofesor.NoEmpleado,
+    alumnos.Nombre as "Nombre",
+    alumnos.CorreoElectronico as "CorreoElectronico",
+    alumnos.Semestre as "semestre",
+    alumnoprofesor.NoBoleta as "Boleta" from alumnos 
+    inner join alumnoprofesor on alumnos.NoBoleta = alumnoprofesor.NoBoleta;
+    /*update alumnoprofesorV set Status=2 where NoEmpleado='' 
+    and NoBoleta='';
+    select * from Tutorados;
+	select * from alumnos;
+	select * from alumnoprofesorv;
+	select * from alumnoprofesor;
+	select * from estados;
+    select * from PROFESORES
+    */
+/*ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'upiita2020';*/
+
+
+create view View_Adeudos_Alumnos as 
+    select 
+    AdeudosMaterias.idMateria,
+    Materias.Materia,
+    Alumnos.NoBoleta
+	from AdeudosMaterias
+				  inner Join Materias
+						on  Materias.IdMateria=AdeudosMaterias.IdMateria
+				  inner Join AdeudosAlumno
+						on AdeudosMaterias.IdAdeudo=AdeudosAlumno.IdAdeudo
+				  inner Join Alumnos
+						on Alumnos.NoBoleta=AdeudosAlumno.NoBoleta;
+				
+        
+drop view if exists View_Alumno_Tutor;         
+create view View_Alumno_Tutor as 
+    select 
+    Profesores.NombreP as Nombre,
+    Profesores.APaternoP,
+    Profesores.AMaternoP,
+    Estados.Estado,
+    Alumnos.NoBoleta
+	from AlumnoProfesor
+				  inner Join Profesores
+						on  Profesores.NoEmpleado=AlumnoProfesor.NoEmpleado
+				  inner Join Estados
+						on Estados.IdEstado=AlumnoProfesor.IdEstado
+				  inner join Alumnos
+						on AlumnoProfesor.NoBoleta=Alumnos.NoBoleta;
+select * from View_Alumno_Tutor;
+
+select * from AdeudosMateriasAlumno;
+
+
